@@ -11,8 +11,8 @@ export default function Home() {
     <main>
       <section id="hero"><Hero /></section>
       <Statement />
-      <section id="work"><Work /></section>
       <section id="services"><Services /></section>
+      <section id="work"><Work /></section>
       <section id="about"><About /></section>
       <section id="contact"><Contact /></section>
       <Footer />

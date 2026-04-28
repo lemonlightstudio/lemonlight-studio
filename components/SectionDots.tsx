@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 
 const SECTIONS = [
-  { id: "hero",     label: "Start"     },
-  { id: "work",     label: "Projekte"  },
-  { id: "services", label: "Services"  },
-  { id: "about",    label: "Studio"    },
-  { id: "contact",  label: "Kontakt"   },
+  { id: "hero",     label: "Start"    },
+  { id: "services", label: "Services" },
+  { id: "work",     label: "Projekte" },
+  { id: "about",    label: "Studio"   },
+  { id: "contact",  label: "Kontakt"  },
 ];
 
 export default function SectionDots() {
