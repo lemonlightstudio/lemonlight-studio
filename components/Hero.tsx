@@ -1,10 +1,26 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+const WORDS   = ["DESIGN", "WEB", "SOCIAL"];
+const CHARS   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!%";
+const DISPLAY_MS  = 2500;
+const SCRAMBLE_MS =  800;
+const ITERATIONS  =    8; // steps to resolve
+const TICK_MS     =   40; // ms per scramble tick
+
+function randomChar() {
+  return CHARS[Math.floor(Math.random() * CHARS.length)];
+}
 
 export default function Hero() {
-  const [logoRotation, setLogoRotation] = useState(0);
+  const [logoRotation, setLogoRotation]   = useState(0);
+  const [displayText,  setDisplayText]    = useState(WORDS[0]);
+  const wordIndex   = useRef(0);
+  const scrambleRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const displayRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Logo cursor tracking
   useEffect(() => {
     const move = (e: MouseEvent) => {
       setLogoRotation(((e.clientX / window.innerWidth) - 0.5) * 10);
@@ -12,6 +28,49 @@ export default function Hero() {
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, []);
+
+  // Scramble → resolve → next word loop
+  useEffect(() => {
+    function scrambleTo(target: string) {
+      let step = 0;
+      if (scrambleRef.current) clearInterval(scrambleRef.current);
+
+      scrambleRef.current = setInterval(() => {
+        // Resolve `step` characters from the left; randomise the rest
+        const resolved = target.slice(0, step);
+        const scrambled = Array.from({ length: target.length - step }, randomChar).join("");
+        setDisplayText(resolved + scrambled);
+        step++;
+
+        if (step > ITERATIONS) {
+          // Snap to final, then hold
+          setDisplayText(target);
+          clearInterval(scrambleRef.current!);
+          scrambleRef.current = null;
+
+          // Schedule next word
+          displayRef.current = setTimeout(() => {
+            wordIndex.current = (wordIndex.current + 1) % WORDS.length;
+            scrambleTo(WORDS[wordIndex.current]);
+          }, DISPLAY_MS);
+        }
+      }, TICK_MS);
+    }
+
+    // Initial hold then start cycling
+    displayRef.current = setTimeout(() => {
+      wordIndex.current = 1;
+      scrambleTo(WORDS[1]);
+    }, DISPLAY_MS);
+
+    return () => {
+      if (scrambleRef.current) clearInterval(scrambleRef.current);
+      if (displayRef.current)  clearTimeout(displayRef.current);
+    };
+  }, []);
+
+  // Widest word sets min-width to prevent layout shift
+  const minWidth = `${Math.max(...WORDS.map((w) => w.length))}ch`;
 
   return (
     <>
@@ -29,10 +88,6 @@ export default function Hero() {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-        @keyframes dotColor {
-          from { color: #F9F200; }
-          to   { color: #ffffff; }
-        }
         @keyframes float {
           0%, 100% { transform: translateY(0px);   }
           50%       { transform: translateY(-12px); }
@@ -44,17 +99,13 @@ export default function Hero() {
           opacity: 0;
           animation: fadeUp 0.8s ease-out forwards;
         }
-        .hero-word-wir    { animation-delay: 0.1s;  }
-        .hero-word-zunden { animation-delay: 0.25s; }
+        .hero-word-1 { animation-delay: 0.1s;  }
+        .hero-word-2 { animation-delay: 0.25s; }
 
         .hero-line2 {
           display: inline-block;
           opacity: 0;
           animation: fadeUpScale 0.9s ease-out 0.5s forwards;
-        }
-        .hero-dot {
-          display: inline-block;
-          animation: dotColor 3s ease-in-out 1.5s infinite alternate;
         }
         .hero-sub {
           opacity: 0;
@@ -63,6 +114,14 @@ export default function Hero() {
         .hero-buttons-wrap {
           opacity: 0;
           animation: fadeIn 0.7s ease-out 1s forwards;
+        }
+
+        /* ── Scramble word ── */
+        .hero-scramble {
+          display: inline-block;
+          color: #F9F200;
+          font-variant-numeric: tabular-nums;
+          letter-spacing: 0.01em;
         }
 
         /* ── Logo float ── */
@@ -145,7 +204,6 @@ export default function Hero() {
         }
       `}</style>
 
-
       <section className="hero-section">
         {/* Dot-grid background */}
         <div
@@ -195,7 +253,7 @@ export default function Hero() {
           }}
         />
 
-        {/* Decorative logo — right side, float + cursor rotation */}
+        {/* Decorative logo — right side, float */}
         <div
           style={{
             position: "absolute",
@@ -225,46 +283,63 @@ export default function Hero() {
         {/* Content */}
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
-            {/* Line 1 — "WIR" + "ZÜNDEN" staggered */}
+            {/* Line 1 — scrambling rotating word */}
             <span style={{ display: "block" }}>
-              <span className="hero-word hero-word-wir" style={{ color: "#F2F2EE", marginRight: "0.25em" }}>
-                WIR
-              </span>
-              <span className="hero-word hero-word-zunden" style={{ color: "#F2F2EE" }}>
-                {"Z\u00DCNDEN"}
+              <span
+                className="hero-word hero-word-1 hero-scramble"
+                style={{ minWidth }}
+              >
+                {displayText}
               </span>
             </span>
 
-            {/* Line 2 — "MARKEN." as one weighted unit */}
+            {/* Line 2 — "das leuchtet." white */}
             <span style={{ display: "block" }}>
-              <span className="hero-line2" style={{ color: "#F9F200" }}>
-                MARKEN<span className="hero-dot">.</span>
+              <span className="hero-line2" style={{ color: "#F2F2EE" }}>
+                das leuchtet.
               </span>
             </span>
           </h1>
 
+          {/* Subheadline */}
           <p
             className="hero-sub"
             style={{
               margin: 0,
-              marginTop: "32px",
+              marginTop: "24px",
+              marginBottom: "8px",
               fontFamily: "var(--font-inter), sans-serif",
               fontWeight: 400,
-              fontSize: "13px",
-              textTransform: "uppercase",
-              letterSpacing: "0.2em",
-              color: "rgba(255,255,255,0.45)",
+              fontSize: "clamp(16px, 1.8vw, 22px)",
+              color: "rgba(255,255,255,0.65)",
+              maxWidth: "560px",
+              lineHeight: 1.5,
             }}
           >
-            Webdesign · Branding · Social Media
+            Webdesign &amp; Design für Unternehmen, die sichtbar wachsen wollen.
           </p>
 
-          <div className="hero-buttons hero-buttons-wrap">
+          {/* Supporting line */}
+          <p
+            className="hero-sub"
+            style={{
+              margin: 0,
+              marginBottom: "40px",
+              fontFamily: "var(--font-inter), sans-serif",
+              fontWeight: 400,
+              fontSize: "14px",
+              color: "rgba(255,255,255,0.35)",
+            }}
+          >
+            Direkt umgesetzt — ohne Umwege.
+          </p>
+
+          <div className="hero-buttons hero-buttons-wrap" style={{ marginTop: 0 }}>
             <a href="#work" className="hero-btn hero-btn-primary">
               Projekte ansehen
             </a>
             <a href="#contact" className="hero-btn hero-btn-secondary">
-              Let&apos;s Talk <span className="hero-arrow">→</span>
+              Kontakt <span className="hero-arrow">→</span>
             </a>
           </div>
         </div>

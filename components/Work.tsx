@@ -10,19 +10,22 @@ const PROJECTS = [
   {
     num: "01",
     title: "Projekt Alpha",
-    tags: ["Webdesign", "Branding"],
+    category: "Webdesign",
+    desc: "Klarer Aufbau und moderner Markenauftritt.",
     gradient: "linear-gradient(135deg, #111100, #1a1a00)",
   },
   {
     num: "02",
     title: "Projekt Beta",
-    tags: ["Branding", "Social Media"],
+    category: "Branding",
+    desc: "Visuelle Identität neu definiert.",
     gradient: "linear-gradient(135deg, #0d0d00, #181800)",
   },
   {
     num: "03",
     title: "Projekt Gamma",
-    tags: ["Webdesign", "Social Media"],
+    category: "Social Media",
+    desc: "Konsistenter Auftritt für mehr Wiedererkennung.",
     gradient: "linear-gradient(135deg, #0a0a1a, #12122a)",
   },
 ];
@@ -191,7 +194,7 @@ export default function Work() {
             letterSpacing: "-0.02em",
           }}
         >
-          Unsere Arbeit.
+          Meine Arbeit.
         </h2>
 
         {/* Rows wrapper — perspective target */}
@@ -216,7 +219,7 @@ export default function Work() {
                 {/* Vertical accent line */}
                 <div className="work-vline" />
 
-                {/* Left — number + title + tags */}
+                {/* Left — number + title + desc + category */}
                 <div style={{ flex: 1, minWidth: 0 }}>
                   <span
                     style={{
@@ -243,43 +246,34 @@ export default function Work() {
                   >
                     {p.title}
                   </h3>
-                  {/* Tags with dot separator */}
-                  <div
+                  {/* Outcome desc */}
+                  <p
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "10px",
-                      marginTop: "12px",
+                      fontFamily: "var(--font-inter), sans-serif",
+                      fontWeight: 400,
+                      fontSize: "14px",
+                      color: "rgba(255,255,255,0.45)",
+                      margin: 0,
+                      marginTop: "10px",
+                      lineHeight: 1.5,
                     }}
                   >
-                    {p.tags.map((tag, ti) => (
-                      <span key={tag} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-inter), sans-serif",
-                            fontWeight: 500,
-                            fontSize: "11px",
-                            textTransform: "uppercase",
-                            letterSpacing: "0.2em",
-                            color: "#F9F200",
-                          }}
-                        >
-                          {tag}
-                        </span>
-                        {ti < p.tags.length - 1 && (
-                          <span
-                            style={{
-                              display: "inline-block",
-                              width: "4px",
-                              height: "4px",
-                              borderRadius: "50%",
-                              background: "#F9F200",
-                              flexShrink: 0,
-                            }}
-                          />
-                        )}
-                      </span>
-                    ))}
+                    {p.desc}
+                  </p>
+                  {/* Category */}
+                  <div style={{ marginTop: "12px" }}>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-inter), sans-serif",
+                        fontWeight: 500,
+                        fontSize: "11px",
+                        textTransform: "uppercase",
+                        letterSpacing: "0.2em",
+                        color: "#F9F200",
+                      }}
+                    >
+                      {p.category}
+                    </span>
                   </div>
                 </div>
 

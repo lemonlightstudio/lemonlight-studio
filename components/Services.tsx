@@ -120,7 +120,7 @@ export default function Services() {
                 marginBottom: "32px",
               }}
             >
-              — WAS WIR MACHEN
+              — WAS ICH MACHE
             </p>
             <h2
               style={{
@@ -133,7 +133,7 @@ export default function Services() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Was wir für dich tun.
+              Was ich für dich tue.
             </h2>
           </div>
 

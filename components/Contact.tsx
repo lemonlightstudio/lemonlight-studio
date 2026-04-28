@@ -151,11 +151,28 @@ export default function Contact() {
             maxWidth: "480px",
           }}
         >
-          Kein langes Briefing-Formular. Schreib einfach — wir reden.
+          Schreib mir — wir schauen was möglich ist.
+        </p>
+
+        {/* Pre-email CTA */}
+        <p
+          style={{
+            fontFamily: "var(--font-inter), sans-serif",
+            fontWeight: 500,
+            fontSize: "13px",
+            textTransform: "uppercase",
+            letterSpacing: "0.2em",
+            color: "#F9F200",
+            margin: 0,
+            marginTop: "56px",
+            marginBottom: "16px",
+          }}
+        >
+          Interesse an einem Projekt?
         </p>
 
         {/* Email */}
-        <div style={{ marginTop: "56px" }}>
+        <div>
           <a href="mailto:hey@lemonlight.studio" className="contact-email">
             hey@lemonlight.studio
             <span style={{ color: "#F9F200", fontSize: "28px", lineHeight: 1 }}>→</span>
