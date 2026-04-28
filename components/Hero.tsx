@@ -148,7 +148,7 @@ export default function Hero() {
           display: inline-block;
           width: 0.18em;
           height: 0.18em;
-          background: #F9F200;
+          background: rgba(249,242,0,0.35);
           border-radius: 50%;
           vertical-align: baseline;
           margin-left: 0.06em;
@@ -244,7 +244,7 @@ export default function Hero() {
         <div aria-hidden style={{
           position: "absolute", inset: 0, pointerEvents: "none",
           background: "radial-gradient(ellipse at 0% 100%, #F9F200 0%, transparent 60%)",
-          opacity: 0.15,
+          opacity: 0.06,
         }} />
 
         {/* Decorative logo — right side */}
@@ -260,7 +260,8 @@ export default function Hero() {
             top: "50%",
             transform: "translateY(-50%)",
             width: "clamp(400px, 45vw, 620px)",
-            opacity: 0.09,
+            opacity: 0.05,
+            filter: "blur(0.8px)",
             display: "block",
             userSelect: "none",
             pointerEvents: "none",
