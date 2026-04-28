@@ -64,25 +64,14 @@ export default function Hero() {
     let timeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
       if (dotRef.current) {
-        dotRef.current.style.transition    = "all 0.3s ease";
-        dotRef.current.style.width         = "28px";
-        dotRef.current.style.borderRadius  = "3px";
-        dotRef.current.style.display       = "inline-block";
-        dotRef.current.style.height        = "0.12em";
-        dotRef.current.style.verticalAlign = "middle";
-        dotRef.current.style.background    = "#F9F200";
-        dotRef.current.style.color         = "transparent";
+        dotRef.current.style.transition = "transform 0.3s ease";
+        dotRef.current.style.transform  = "scaleX(6)";
       }
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         if (dotRef.current) {
-          dotRef.current.style.transition    = "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-          dotRef.current.style.width         = "";
-          dotRef.current.style.borderRadius  = "";
-          dotRef.current.style.height        = "";
-          dotRef.current.style.background    = "";
-          dotRef.current.style.color         = "";
-          dotRef.current.style.verticalAlign = "";
+          dotRef.current.style.transition = "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
+          dotRef.current.style.transform  = "scaleX(1)";
         }
       }, 200);
     };
@@ -141,8 +130,8 @@ export default function Hero() {
         }
         .hero-dot {
           display: inline-block;
-          position: relative;
           color: #F9F200;
+          transition: transform 0.3s ease;
         }
         .hero-sub {
           margin: 0;
@@ -269,11 +258,7 @@ export default function Hero() {
             <span className="hero-rotating-word">{display}</span>
             <span className="hero-line2">
               DAS {"Z\u00DCNDET"}
-              <span
-                ref={dotRef}
-                className="hero-dot"
-                style={{ fontSize: "inherit", lineHeight: "inherit" }}
-              >.</span>
+              <span ref={dotRef} className="hero-dot">.</span>
             </span>
           </h1>
 
