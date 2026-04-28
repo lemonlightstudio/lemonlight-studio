@@ -46,7 +46,7 @@ export default function Footer() {
           <img
             src="/Logos/lemonlight_secondary_logo_yl-trans.png"
             alt="lemonlight studio"
-            style={{ width: "160px", height: "auto", display: "block", margin: "0 auto", opacity: 1 }}
+            style={{ width: "180px", height: "auto", display: "block", margin: "0 auto", opacity: 1 }}
           />
         </div>
 
@@ -110,7 +110,7 @@ export default function Footer() {
               letterSpacing: "0.05em",
             }}
           >
-            Made with ♥ in Salzburg
+            Made with ♥ in Zell am See
           </span>
         </div>
       </footer>

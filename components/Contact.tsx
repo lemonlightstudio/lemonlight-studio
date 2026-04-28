@@ -87,7 +87,7 @@ export default function Contact() {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          padding: "0 10vw",
+          padding: "120px 10vw 0",
         }}
       >
         {/* Label */}
@@ -188,8 +188,8 @@ export default function Contact() {
             alignItems: "center",
           }}
         >
-          <a href="#" className="contact-social">Instagram ↗</a>
-          <a href="#" className="contact-social">LinkedIn ↗</a>
+          <a href="https://www.instagram.com/chris.hollerx" target="_blank" rel="noopener noreferrer" className="contact-social">Instagram ↗</a>
+          <a href="https://www.linkedin.com/in/christoph-h%C3%B6ller-737561401/" target="_blank" rel="noopener noreferrer" className="contact-social">LinkedIn ↗</a>
         </div>
 
         {/* Bottom-right watermark */}
