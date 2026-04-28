@@ -18,6 +18,19 @@ export default function Footer() {
           color: #F9F200;
           opacity: 1;
         }
+        .footer-legal-link {
+          font-family: var(--font-inter), sans-serif;
+          font-size: 11px;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: rgba(255,255,255,0.25);
+          text-decoration: none;
+          transition: color 0.3s ease, opacity 0.3s ease;
+        }
+        .footer-legal-link:hover {
+          color: #F9F200;
+          opacity: 1;
+        }
       `}</style>
 
       <footer
@@ -58,6 +71,12 @@ export default function Footer() {
             </a>
           ))}
         </nav>
+
+        {/* Legal links */}
+        <div style={{ display: "flex", justifyContent: "center", gap: "32px", marginTop: "32px", marginBottom: "48px" }}>
+          <a href="/impressum" className="footer-legal-link">Impressum</a>
+          <a href="/datenschutz" className="footer-legal-link">Datenschutz</a>
+        </div>
 
         {/* Bottom bar */}
         <div
