@@ -87,6 +87,10 @@ export default function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
+    const CELL             = 60;
+    const TRAIL_OPACITIES  = [0.5, 0.35, 0.2, 0.1, 0.05];
+    const DIRS             = [{ dc: 1, dr: 0 }, { dc: -1, dr: 0 }, { dc: 0, dr: 1 }, { dc: 0, dr: -1 }];
+
     const resize = () => {
       canvas.width  = canvas.offsetWidth;
       canvas.height = canvas.offsetHeight;
@@ -94,49 +98,81 @@ export default function Hero() {
     resize();
     window.addEventListener("resize", resize);
 
-    const TRAIL = 8;
-    const pts = [
-      { x: canvas.width * 0.20, y: canvas.height * 0.30, vx:  0.30, vy:  0.20, trail: [] as {x:number;y:number}[] },
-      { x: canvas.width * 0.70, y: canvas.height * 0.60, vx: -0.20, vy: -0.15, trail: [] as {x:number;y:number}[] },
+    type Pt = {
+      col: number; row: number;
+      tcol: number; trow: number;
+      progress: number; speed: number;
+      trail: { col: number; row: number }[];
+    };
+
+    const pickDir = (p: Pt) => {
+      const maxCol = Math.floor(canvas.width  / CELL);
+      const maxRow = Math.floor(canvas.height / CELL);
+      const valid  = DIRS.filter(d => {
+        const nc = p.col + d.dc;
+        const nr = p.row + d.dr;
+        return nc >= 0 && nc <= maxCol && nr >= 0 && nr <= maxRow;
+      });
+      const dir  = valid[Math.floor(Math.random() * valid.length)];
+      p.tcol     = p.col + dir.dc;
+      p.trow     = p.row + dir.dr;
+      p.progress = 0;
+    };
+
+    const makePoint = (col: number, row: number, speed: number): Pt => {
+      const p: Pt = { col, row, tcol: col, trow: row, progress: 0, speed, trail: [] };
+      pickDir(p);
+      return p;
+    };
+
+    const pts: Pt[] = [
+      makePoint(Math.round(canvas.width  * 0.20 / CELL), Math.round(canvas.height * 0.30 / CELL), 1 / 1.2),
+      makePoint(Math.round(canvas.width  * 0.70 / CELL), Math.round(canvas.height * 0.60 / CELL), 1 / 1.8),
     ];
 
-    let rafId: number;
-    const animate = () => {
-      const w = canvas.width;
-      const h = canvas.height;
-      ctx.clearRect(0, 0, w, h);
+    let last  = performance.now();
+    let rafId = 0;
+
+    const animate = (now: number) => {
+      const dt = Math.min((now - last) / 1000, 0.1);
+      last     = now;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       for (const p of pts) {
-        // store trail
-        p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > TRAIL) p.trail.shift();
+        p.progress += dt * p.speed;
 
-        // draw trail
+        if (p.progress >= 1) {
+          p.trail.push({ col: p.col, row: p.row });
+          if (p.trail.length > 5) p.trail.shift();
+          p.col = p.tcol;
+          p.row = p.trow;
+          pickDir(p);
+        }
+
+        // smooth interpolated position
+        const px = (p.col + (p.tcol - p.col) * Math.min(p.progress, 1)) * CELL;
+        const py = (p.row + (p.trow - p.row) * Math.min(p.progress, 1)) * CELL;
+
+        // draw trail — index 0 is oldest, length-1 is newest
         for (let i = 0; i < p.trail.length; i++) {
-          const alpha = (i / p.trail.length) * 0.4;
+          const opacity = TRAIL_OPACITIES[p.trail.length - 1 - i] ?? 0.05;
           ctx.beginPath();
-          ctx.arc(p.trail[i].x, p.trail[i].y, 1.5, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(249,242,0,${alpha})`;
+          ctx.arc(p.trail[i].col * CELL, p.trail[i].row * CELL, 2, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(249,242,0,${opacity})`;
           ctx.fill();
         }
 
         // draw point
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(249,242,0,0.45)";
+        ctx.arc(px, py, 3, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(249,242,0,0.7)";
         ctx.fill();
-
-        // update position + wrap
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0)  p.x = w;
-        if (p.x > w)  p.x = 0;
-        if (p.y < 0)  p.y = h;
-        if (p.y > h)  p.y = 0;
       }
 
       rafId = requestAnimationFrame(animate);
     };
+
     rafId = requestAnimationFrame(animate);
 
     return () => {
