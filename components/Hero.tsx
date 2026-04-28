@@ -64,14 +64,16 @@ export default function Hero() {
     let timeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
       if (dotRef.current) {
-        dotRef.current.style.transition = "transform 0.3s ease";
-        dotRef.current.style.transform  = "scaleX(6)";
+        dotRef.current.style.transition   = "width 0.3s ease, border-radius 0.3s ease";
+        dotRef.current.style.width        = "1.8em";
+        dotRef.current.style.borderRadius = "2px";
       }
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         if (dotRef.current) {
-          dotRef.current.style.transition = "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
-          dotRef.current.style.transform  = "scaleX(1)";
+          dotRef.current.style.transition   = "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease";
+          dotRef.current.style.width        = "0.25em";
+          dotRef.current.style.borderRadius = "50%";
         }
       }, 200);
     };
@@ -130,8 +132,13 @@ export default function Hero() {
         }
         .hero-dot {
           display: inline-block;
-          color: #F9F200;
-          transition: transform 0.3s ease;
+          width: 0.25em;
+          height: 0.12em;
+          background: #F9F200;
+          border-radius: 50%;
+          vertical-align: middle;
+          margin-left: 0.05em;
+          transition: width 0.3s ease, border-radius 0.3s ease;
         }
         .hero-sub {
           margin: 0;
@@ -258,7 +265,7 @@ export default function Hero() {
             <span className="hero-rotating-word">{display}</span>
             <span className="hero-line2">
               DAS {"Z\u00DCNDET"}
-              <span ref={dotRef} className="hero-dot">.</span>
+              <span ref={dotRef} className="hero-dot" />
             </span>
           </h1>
 
