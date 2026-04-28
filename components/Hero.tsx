@@ -9,6 +9,7 @@ const CHARS = '<>{}[]/=";:#!$';
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const dotRef         = useRef<HTMLSpanElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -58,6 +59,26 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
+  // Dot scroll reaction
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout>;
+    const onScroll = () => {
+      if (dotRef.current) {
+        dotRef.current.style.animation = "none";
+        dotRef.current.style.color     = "#F9F200";
+      }
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (dotRef.current) {
+          dotRef.current.style.color     = "";
+          dotRef.current.style.animation = "dotPulse 2.5s ease-in-out infinite";
+        }
+      }, 600);
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => { window.removeEventListener("scroll", onScroll); clearTimeout(timeout); };
+  }, []);
+
   return (
     <>
       <style>{`
@@ -68,6 +89,13 @@ export default function Hero() {
         @keyframes fadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
+        }
+        @keyframes dotPulse {
+          0%, 100% { color: #ffffff; }
+          50%      { color: #F9F200; }
+        }
+        .hero-dot-pulse {
+          animation: dotPulse 2.5s ease-in-out infinite;
         }
         .hero-section {
           position: relative;
@@ -230,7 +258,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
+            <span className="hero-line2">{`DAS Z\u00DCNDET`}<span ref={dotRef} className="hero-dot-pulse">.</span></span>
           </h1>
 
           <p className="hero-sub">
@@ -247,6 +275,22 @@ export default function Hero() {
         </div>
 
       </section>
+
+      {/* Film grain — fixed, covers entire page */}
+      <div
+        aria-hidden
+        style={{
+          position: "fixed",
+          top: 0, left: 0,
+          width: "100vw", height: "100vh",
+          pointerEvents: "none",
+          zIndex: 999,
+          opacity: 0.03,
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+          backgroundSize: "200px 200px",
+        }}
+      />
     </>
   );
 }
