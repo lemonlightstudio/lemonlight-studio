@@ -174,13 +174,7 @@ export default function Hero() {
         .hero-dot {
           display: inline-block;
           position: relative;
-          width: 1ch;
-          height: 1ch;
-          border-radius: 50%;
-          background: #F9F200;
-          color: transparent;
-          vertical-align: middle;
-          margin-left: 0.1ch;
+          color: #F9F200;
         }
         .hero-sub {
           margin: 0;
@@ -310,7 +304,7 @@ export default function Hero() {
               <span
                 ref={dotRef}
                 className="hero-dot"
-                style={{ position: "relative", display: "inline-block" }}
+                style={{ fontSize: "inherit", lineHeight: "inherit" }}
               >.</span>
             </span>
           </h1>
