@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-const links = ["Work", "Studio", "Services", "Contact"];
+const links = ["work", "studio", "services", "contact"];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,9 +34,7 @@ export default function Navbar() {
         .nav-link {
           font-family: var(--font-inter), sans-serif;
           font-weight: 500;
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
+          font-size: 13px;
           color: rgba(255,255,255,0.7);
           text-decoration: none;
           transition: color 0.25s ease;
@@ -47,9 +45,7 @@ export default function Navbar() {
         .nav-cta-link {
           font-family: var(--font-inter), sans-serif;
           font-weight: 500;
-          font-size: 11px;
-          text-transform: uppercase;
-          letter-spacing: 0.15em;
+          font-size: 13px;
           color: #F9F200;
           text-decoration: none;
           transition: text-decoration 0.25s ease;
@@ -63,8 +59,6 @@ export default function Navbar() {
           font-family: var(--font-inter), sans-serif;
           font-weight: 700;
           font-size: clamp(32px, 8vw, 64px);
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
           color: rgba(255,255,255,0.85);
           text-decoration: none;
           transition: color 0.2s ease;
@@ -201,8 +195,6 @@ export default function Navbar() {
               fontFamily: "var(--font-inter), sans-serif",
               fontWeight: 500,
               fontSize: "13px",
-              textTransform: "uppercase",
-              letterSpacing: "0.15em",
               color: "#F9F200",
               textDecoration: "none",
               marginTop: "16px",

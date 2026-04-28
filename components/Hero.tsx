@@ -1,50 +1,37 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-const WORDS      = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
-const DISPLAY_MS = 2200;
-const OUT_MS     = 250;
-const IN_MS      = 250;
+const WORDS = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
 
-function scramble(
-  target: string,
-  onUpdate: (s: string) => void,
-  onDone: () => void,
-): ReturnType<typeof setInterval> {
-  const chars       = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  const totalFrames = 12;
-  let frame         = 0;
-  const interval    = setInterval(() => {
-    const revealed  = Math.floor((frame / totalFrames) * target.length);
-    const scrambled = target
-      .split("")
-      .map((char, i) => {
-        if (char === " ") return " ";
-        if (i < revealed) return char;
-        return chars[Math.floor(Math.random() * chars.length)];
-      })
-      .join("");
-    onUpdate(scrambled);
-    frame++;
-    if (frame > totalFrames) {
-      clearInterval(interval);
-      onUpdate(target);
-      onDone();
+const scrambleToNext = (nextWord: string, setter: (s: string) => void) => {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let count = 0;
+  const max = 10;
+  const id = setInterval(() => {
+    if (count >= max) {
+      clearInterval(id);
+      setter(nextWord);
+      return;
     }
-  }, 35);
-  return interval;
-}
+    setter(
+      nextWord
+        .split("")
+        .map((c) =>
+          c === " " ? " " : chars[Math.floor(Math.random() * chars.length)]
+        )
+        .join("")
+    );
+    count++;
+  }, 40);
+};
 
 export default function Hero() {
-  const slotsRef       = useRef<(HTMLDivElement | null)[]>([null, null]);
-  const activeSlotRef  = useRef(0);
-  const wordIdxRef     = useRef([0, 1]);
-  const timersRef      = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const scrambleRef    = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [displayWord, setDisplayWord] = useState(WORDS[0]);
+  const wordIndexRef   = useRef(0);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
-  // Scroll progress bar
+  // Scroll progress
   useEffect(() => {
     const onScroll = () => {
       const bar   = progressBarRef.current;
@@ -56,88 +43,14 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Rotating word engine
+  // Word cycling
   useEffect(() => {
-    const slots = slotsRef.current;
-    const s0    = slots[0]!;
-    const s1    = slots[1]!;
-
-    // Initial positions
-    s0.textContent = WORDS[0];
-    s0.style.transform = "translateY(0)";
-    s0.style.opacity   = "1";
-    s0.style.filter    = "blur(0px)";
-    s1.textContent = WORDS[1];
-    s1.style.transform = "translateY(110%)";
-    s1.style.opacity   = "0";
-    s1.style.filter    = "blur(4px)";
-
-    function later(fn: () => void, ms: number) {
-      const t = setTimeout(fn, ms);
-      timersRef.current.push(t);
-    }
-
-    function cycle() {
-      const active      = activeSlotRef.current;
-      const curEl       = slots[active]!;
-      const nxtEl       = slots[1 - active]!;
-      const nextWordIdx = (wordIdxRef.current[active] + 1) % WORDS.length;
-
-      // 1. Slide outgoing word up + fade + blur
-      curEl.style.transition = `transform ${OUT_MS}ms ease, opacity ${OUT_MS}ms ease, filter ${OUT_MS}ms ease`;
-      curEl.style.transform  = "translateY(-110%)";
-      curEl.style.opacity    = "0";
-      curEl.style.filter     = "blur(4px)";
-
-      later(() => {
-        // 2. Snap incoming to bottom (no transition), then animate in
-        nxtEl.textContent      = WORDS[nextWordIdx];
-        nxtEl.style.transition = "none";
-        nxtEl.style.transform  = "translateY(110%)";
-        nxtEl.style.opacity    = "0";
-        nxtEl.style.filter     = "blur(4px)";
-        void nxtEl.offsetWidth; // force reflow
-
-        // Start scramble — updates textContent via callback
-        if (scrambleRef.current) clearInterval(scrambleRef.current);
-        scrambleRef.current = scramble(
-          WORDS[nextWordIdx],
-          (s) => { nxtEl.textContent = s; },
-          () => {},
-        );
-
-        // Slide in
-        nxtEl.style.transition = `transform ${IN_MS}ms ease, opacity ${IN_MS}ms ease, filter ${IN_MS}ms ease`;
-        nxtEl.style.transform  = "translateY(0)";
-        nxtEl.style.opacity    = "1";
-        nxtEl.style.filter     = "blur(0px)";
-
-        later(() => {
-          // 3. Swap active slot
-          const newActive = 1 - active;
-          activeSlotRef.current         = newActive;
-          wordIdxRef.current[newActive] = nextWordIdx;
-
-          // Reset old current to standby below
-          const futureWordIdx = (nextWordIdx + 1) % WORDS.length;
-          curEl.style.transition = "none";
-          curEl.style.transform  = "translateY(110%)";
-          curEl.style.opacity    = "0";
-          curEl.style.filter     = "blur(4px)";
-          curEl.textContent      = WORDS[futureWordIdx];
-          wordIdxRef.current[active] = futureWordIdx;
-
-          later(cycle, DISPLAY_MS);
-        }, IN_MS);
-      }, OUT_MS);
-    }
-
-    later(cycle, DISPLAY_MS);
-
-    return () => {
-      timersRef.current.forEach(clearTimeout);
-      if (scrambleRef.current) clearInterval(scrambleRef.current);
-    };
+    const id = setInterval(() => {
+      const next = (wordIndexRef.current + 1) % WORDS.length;
+      wordIndexRef.current = next;
+      scrambleToNext(WORDS[next], setDisplayWord);
+    }, 2500);
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -162,8 +75,8 @@ export default function Hero() {
           background: #0A0A0A;
           display: flex;
           align-items: center;
-          padding-left: 8vw;
-          padding-right: 8vw;
+          padding-left: 6vw;
+          padding-right: 6vw;
           overflow: hidden;
         }
         .hero-headline {
@@ -175,18 +88,9 @@ export default function Hero() {
           line-height: 0.95;
           text-transform: uppercase;
         }
-        .hero-word-container {
+        .hero-rotating-word {
           display: block;
-          overflow: hidden;
-          position: relative;
-          height: 1em;
-        }
-        .hero-slot {
-          position: absolute;
-          top: 0;
-          left: 0;
           color: #F9F200;
-          will-change: transform, opacity, filter;
         }
         .hero-line2 {
           display: block;
@@ -306,32 +210,18 @@ export default function Hero() {
           ref={progressBarRef}
           aria-hidden
           style={{
-            position: "fixed",
-            left: 0,
-            top: 0,
-            width: "3px",
-            height: "0%",
+            position: "fixed", left: 0, top: 0,
+            width: "3px", height: "0%",
             background: "#F9F200",
-            zIndex: 999,
-            pointerEvents: "none",
+            zIndex: 999, pointerEvents: "none",
           }}
         />
 
         {/* Content */}
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
-
-            {/* Line 1 — rotating word */}
-            <span className="hero-word-container">
-              <div ref={(el) => { slotsRef.current[0] = el; }} className="hero-slot" />
-              <div ref={(el) => { slotsRef.current[1] = el; }} className="hero-slot" />
-            </span>
-
-            {/* Line 2 */}
-            <span className="hero-line2">
-              DAS {"Z\u00DCNDET."}
-            </span>
-
+            <span className="hero-rotating-word">{displayWord}</span>
+            <span className="hero-line2">DAS {"Z\u00DCNDET."}</span>
           </h1>
 
           <p className="hero-sub">
