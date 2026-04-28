@@ -9,7 +9,6 @@ const CHARS = '<>{}[]/=";:#!$';
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const dotRef         = useRef<HTMLSpanElement>(null);
   const canvasRef      = useRef<HTMLCanvasElement>(null);
 
   // Scroll progress
@@ -60,25 +59,6 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
-  // Dot scroll reaction
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    const onScroll = () => {
-      if (dotRef.current) {
-        dotRef.current.style.animation = "none";
-        dotRef.current.style.color     = "#F9F200";
-      }
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        if (dotRef.current) {
-          dotRef.current.style.color     = "";
-          dotRef.current.style.animation = "dotPulse 2.5s ease-in-out infinite";
-        }
-      }, 600);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => { window.removeEventListener("scroll", onScroll); clearTimeout(timeout); };
-  }, []);
 
   // Canvas grid point motion
   useEffect(() => {
@@ -101,7 +81,6 @@ export default function Hero() {
       col: number; row: number;
       tcol: number; trow: number;
       progress: number; speed: number;
-      trail: { col: number; row: number }[];
     };
 
     const pickDir = (p: Pt) => {
@@ -119,7 +98,7 @@ export default function Hero() {
     };
 
     const makePoint = (col: number, row: number, speed: number): Pt => {
-      const p: Pt = { col, row, tcol: col, trow: row, progress: 0, speed, trail: [] };
+      const p: Pt = { col, row, tcol: col, trow: row, progress: 0, speed };
       pickDir(p);
       return p;
     };
@@ -143,40 +122,23 @@ export default function Hero() {
         p.progress += dt * p.speed;
 
         if (p.progress >= 1) {
-          p.trail.push({ col: p.col, row: p.row });
-          if (p.trail.length > 6) p.trail.shift();
           p.col = p.tcol;
           p.row = p.trow;
           pickDir(p);
         }
 
-        // smooth interpolated head position
+        // smooth interpolated position
         const prog = Math.min(p.progress, 1);
         const px   = (p.col + (p.tcol - p.col) * prog) * CELL;
         const py   = (p.row + (p.trow - p.row) * prog) * CELL;
 
-        // build full position list: trail positions + current head
-        const positions = [
-          ...p.trail.map(t => ({ x: t.col * CELL, y: t.row * CELL })),
-          { x: px, y: py },
-        ];
+        // opacity: 0.3 while moving, 0.7 when arrived
+        const moving  = p.progress < 1;
+        const opacity = moving ? 0.3 : 0.7;
 
-        // draw fading line segments — oldest segment has opacity ~0, head has 0.4
-        ctx.lineWidth   = 1;
-        ctx.lineCap     = "round";
-        for (let i = 1; i < positions.length; i++) {
-          const opacity = (i / (positions.length - 1)) * 0.4;
-          ctx.beginPath();
-          ctx.moveTo(positions[i - 1].x, positions[i - 1].y);
-          ctx.lineTo(positions[i].x,     positions[i].y);
-          ctx.strokeStyle = `rgba(249,242,0,${opacity})`;
-          ctx.stroke();
-        }
-
-        // draw head dot
         ctx.beginPath();
         ctx.arc(px, py, 3, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(249,242,0,0.7)";
+        ctx.fillStyle = `rgba(249,242,0,${opacity})`;
         ctx.fill();
       }
 
@@ -201,14 +163,6 @@ export default function Hero() {
         @keyframes fadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
-        }
-        @keyframes dotPulse {
-          0%, 100% { color: #ffffff; transform: scale(1);    }
-          50%      { color: #F9F200; transform: scale(1.15); }
-        }
-        .hero-dot-pulse {
-          display: inline-block;
-          animation: dotPulse 2.2s ease-in-out infinite;
         }
         .hero-section {
           position: relative;
@@ -383,7 +337,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">{`DAS Z\u00DCNDET`}<span ref={dotRef} className="hero-dot-pulse">.</span></span>
+            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
           </h1>
 
           <p className="hero-sub">
