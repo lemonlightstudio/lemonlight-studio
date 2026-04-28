@@ -9,7 +9,6 @@ const CHARS = '<>{}[]/=";:#!$';
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const dotRef         = useRef<HTMLSpanElement>(null);
   const logoRef        = useRef<HTMLImageElement>(null);
 
   // Scroll progress
@@ -60,33 +59,6 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
-  // Dot scroll morph
-  useEffect(() => {
-    let timeout: ReturnType<typeof setTimeout>;
-    const onScroll = () => {
-      if (dotRef.current) {
-        dotRef.current.style.transition   = "width 0.3s ease, height 0.3s ease, border-radius 0.3s ease";
-        dotRef.current.style.width        = "0.4em";
-        dotRef.current.style.height       = "0.1em";
-        dotRef.current.style.borderRadius = "2px";
-      }
-      clearTimeout(timeout);
-      timeout = setTimeout(() => {
-        if (dotRef.current) {
-          dotRef.current.style.transition   = "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease";
-          dotRef.current.style.width        = "0.18em";
-          dotRef.current.style.height       = "0.18em";
-          dotRef.current.style.borderRadius = "50%";
-        }
-      }, 200);
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      clearTimeout(timeout);
-    };
-  }, []);
-
   // Logo parallax
   useEffect(() => {
     const onScroll = () => {
@@ -108,10 +80,6 @@ export default function Hero() {
         @keyframes fadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
-        }
-        @keyframes float {
-          0%, 100% { transform: translateY(0px);  }
-          50%      { transform: translateY(-12px); }
         }
 
         .hero-section {
@@ -143,16 +111,6 @@ export default function Hero() {
           color: #F2F2EE;
           opacity: 0;
           animation: fadeUp 0.8s ease-out 0.3s forwards;
-        }
-        .hero-dot {
-          display: inline-block;
-          width: 0.18em;
-          height: 0.18em;
-          background: rgba(249,242,0,0.35);
-          border-radius: 50%;
-          vertical-align: baseline;
-          margin-left: 0.06em;
-          transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
         }
         .hero-sub {
           margin: 0;
@@ -197,9 +155,6 @@ export default function Hero() {
         .hero-cta:hover {
           opacity: 0.88;
           transform: scale(1.01);
-        }
-        .logo-float {
-          animation: float 4s ease-in-out infinite;
         }
 
         @media (max-width: 639px) {
@@ -285,10 +240,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">
-              DAS {"Z\u00DCNDET"}
-              <span ref={dotRef} className="hero-dot" />
-            </span>
+            <span className="hero-line2">DAS {`Z\u00DCNDET.`}</span>
           </h1>
 
           <p className="hero-sub">
