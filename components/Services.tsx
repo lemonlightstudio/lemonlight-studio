@@ -10,20 +10,23 @@ const SERVICES = [
   {
     number: "01",
     title: "Webdesign",
+    subtitle: "Websites · Landingpages · Shops",
     bgWord: "WEB",
-    body: "Websites die nicht nur schön aussehen — sondern Besucher zu Kunden machen.",
+    body: "Eine Website die nicht nur gut aussieht — sondern auch verkauft. Schnell, modern, mobil optimiert.",
   },
   {
     number: "02",
-    title: "Branding",
-    bgWord: "BRAND",
-    body: "Von Logo bis komplette Brand Identity. Dein Auftritt bekommt ein Gesicht das bleibt.",
+    title: "Grafik & Branding",
+    subtitle: "Logo · Brand Identity · Print",
+    bgWord: "DESIGN",
+    body: "Deine Marke bekommt ein Gesicht. Von der ersten Idee bis zum fertigen Brand System.",
   },
   {
     number: "03",
     title: "Social Media",
-    bgWord: "SOC",
-    body: "Content, Design & Strategie für Instagram, LinkedIn und Co. — der Feed der auffällt.",
+    subtitle: "Instagram · LinkedIn · Content",
+    bgWord: "SOCIAL",
+    body: "Content der auffällt, Designs die stoppen, Strategie die wächst.",
   },
 ];
 
@@ -130,7 +133,7 @@ export default function Services() {
                 letterSpacing: "-0.02em",
               }}
             >
-              Drei Dinge die wir besser machen als alle anderen.
+              Was wir für dich tun.
             </h2>
           </div>
 
@@ -223,7 +226,7 @@ export default function Services() {
                   fontSize: "clamp(40px, 5vw, 64px)",
                   color: "#ffffff",
                   margin: 0,
-                  marginBottom: "32px",
+                  marginBottom: "16px",
                   lineHeight: 1,
                   letterSpacing: "-0.02em",
                 }}
@@ -234,9 +237,24 @@ export default function Services() {
               <p
                 style={{
                   fontFamily: "var(--font-inter), sans-serif",
+                  fontWeight: 500,
+                  fontSize: "11px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.2em",
+                  color: "#F9F200",
+                  margin: 0,
+                  marginBottom: "20px",
+                }}
+              >
+                {s.subtitle}
+              </p>
+
+              <p
+                style={{
+                  fontFamily: "var(--font-inter), sans-serif",
                   fontWeight: 400,
                   fontSize: "17px",
-                  color: "rgba(255,255,255,0.55)",
+                  color: "rgba(255,255,255,0.5)",
                   margin: 0,
                   marginBottom: "48px",
                   lineHeight: 1.7,
