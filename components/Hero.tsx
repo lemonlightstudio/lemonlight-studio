@@ -211,10 +211,10 @@ export default function Hero() {
           alt=""
           style={{
             position: "absolute",
-            right: "-12%",
+            right: "-10%",
             top: "50%",
             transform: "translateY(-50%)",
-            width: "clamp(400px, 45vw, 620px)",
+            width: "clamp(380px, 42vw, 580px)",
             opacity: 0.05,
             filter: "blur(0.8px)",
             display: "block",
