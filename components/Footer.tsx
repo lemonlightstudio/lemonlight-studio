@@ -1,3 +1,5 @@
+import LogoDissolve from "@/components/LogoDissolve";
+
 const NAV_LINKS = ["Work", "Studio", "Services", "Contact"];
 
 export default function Footer() {
@@ -31,9 +33,6 @@ export default function Footer() {
           color: #F9F200;
           opacity: 1;
         }
-        .footer-logo:hover {
-          transform: scale(1.03);
-        }
       `}</style>
 
       <footer
@@ -45,13 +44,7 @@ export default function Footer() {
       >
         {/* Logo */}
         <div style={{ display: "flex", justifyContent: "center", marginBottom: "48px" }}>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src="/Logos/lemonlight_secondary_logo.png"
-            alt="lemonlight studio"
-            className="footer-logo"
-            style={{ width: "180px", height: "auto", display: "block", margin: "0 auto", opacity: 1, transition: "transform 0.4s ease" }}
-          />
+          <LogoDissolve />
         </div>
 
         {/* Nav links */}

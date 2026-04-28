@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Cursor from "@/components/Cursor";
 import SectionDots from "@/components/SectionDots";
+import ScrollRestoration from "@/components/ScrollRestoration";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -23,10 +24,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <head>
-        <script dangerouslySetInnerHTML={{__html: `if ('scrollRestoration' in history) { history.scrollRestoration = 'auto'; }`}} />
-      </head>
       <body>
+        <ScrollRestoration />
         <Cursor />
         <Navbar />
         <SectionDots />
