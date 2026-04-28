@@ -10,9 +10,6 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const canvasRef      = useRef<HTMLCanvasElement>(null);
-  const dot1Ref        = useRef<HTMLSpanElement>(null);
-  const dot2Ref        = useRef<HTMLSpanElement>(null);
-  const dot3Ref        = useRef<HTMLSpanElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -26,20 +23,6 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Three dot wave
-  useEffect(() => {
-    let active = 0;
-    const dots = [dot1Ref, dot2Ref, dot3Ref];
-    const interval = setInterval(() => {
-      dots.forEach((dot, i) => {
-        if (dot.current) {
-          dot.current.style.background = i === active ? "#F9F200" : "rgba(255,255,255,0.35)";
-        }
-      });
-      active = (active + 1) % 3;
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
 
   // Word cycling + scramble
   useEffect(() => {
@@ -355,11 +338,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">{`DAS Z\u00DCNDET`}<span style={{ display: "inline-flex", alignItems: "baseline", gap: "0.08em", marginLeft: "0.1em" }}>
-                {[dot1Ref, dot2Ref, dot3Ref].map((ref, i) => (
-                  <span key={i} ref={ref} style={{ display: "inline-block", width: "0.18em", height: "0.18em", borderRadius: "50%", background: "rgba(255,255,255,0.35)", verticalAlign: "baseline", marginBottom: "0.08em", transition: "background 0.3s ease" }} />
-                ))}
-              </span></span>
+            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
           </h1>
 
           <p className="hero-sub">
