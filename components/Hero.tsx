@@ -338,7 +338,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
+            <div style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE" }}>DAS ZÜNDET.</div>
           </h1>
 
           <p className="hero-sub">
