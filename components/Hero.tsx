@@ -203,14 +203,14 @@ export default function Hero() {
             fontFamily: "monospace", fontSize: "11px",
             color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em",
           }}>
-            47.8095° N / 13.0389° E
+            47.3256° N / 12.7997° E
           </div>
           <div style={{
             fontFamily: "monospace", fontSize: "10px",
             color: "rgba(255,255,255,0.12)", letterSpacing: "0.15em",
             marginTop: "4px",
           }}>
-            SALZBURG, AUSTRIA
+            ZELL AM SEE, AUSTRIA
           </div>
         </div>
 
