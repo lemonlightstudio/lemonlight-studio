@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   title: "lemonlight.",
   description: "lemonlight studio — creative agency",
   icons: {
-    icon: "/favicon.png",
-    apple: "/favicon.png",
+    icon: [{ url: "/Logos/lemonlight_logo_yl.png", type: "image/png" }],
+    apple: "/Logos/lemonlight_logo_yl.png",
   },
 };
 
