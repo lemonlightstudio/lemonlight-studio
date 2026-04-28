@@ -60,36 +60,35 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
-  // Particle explosion on dot every 4s
+  // Magnetic pull + particle explosion
   useEffect(() => {
-    const explode = () => {
-      const dot = dotRef.current;
-      if (!dot) return;
+    const dot = dotRef.current;
+    if (!dot) return;
 
-      // Dot pulse
+    const MAGNETIC_RADIUS = 120;
+    const MAX_DISPLACEMENT = 14;
+    let inField = false;
+
+    // ── Particle burst ──────────────────────────────────────────
+    const explode = () => {
       dot.animate(
-        [{ transform: "scale(1)" }, { transform: "scale(1.3)" }, { transform: "scale(1)" }],
+        [
+          { transform: dot.style.transform + " scale(1)"    },
+          { transform: dot.style.transform + " scale(1.25)" },
+          { transform: dot.style.transform + " scale(1)"    },
+        ],
         { duration: 300, easing: "ease-in-out" }
       );
 
-      // Particles
       ANGLES_RAD.forEach((angle) => {
-        const dist = 12 + Math.random() * 6;
+        const dist = 14 + Math.random() * 6;
         const x    = Math.cos(angle) * dist;
         const y    = Math.sin(angle) * dist;
 
         const p = document.createElement("div");
-        p.style.cssText = [
-          "position:absolute",
-          "width:3px",
-          "height:3px",
-          "border-radius:50%",
-          "background:#F9F200",
-          "top:50%",
-          "left:50%",
-          "pointer-events:none",
-          "z-index:10",
-        ].join(";");
+        p.style.cssText =
+          "position:absolute;width:3px;height:3px;border-radius:50%;" +
+          "background:#F9F200;top:50%;left:50%;pointer-events:none;z-index:10;";
         dot.appendChild(p);
 
         p.animate(
@@ -104,8 +103,48 @@ export default function Hero() {
       });
     };
 
-    const id = setInterval(explode, 4000);
-    return () => clearInterval(id);
+    // ── Periodic explosion every 4s ─────────────────────────────
+    const periodicId = setInterval(explode, 4000);
+
+    // ── Magnetic mousemove ──────────────────────────────────────
+    const onMouseMove = (e: MouseEvent) => {
+      const rect    = dot.getBoundingClientRect();
+      const centerX = rect.left + rect.width  / 2;
+      const centerY = rect.top  + rect.height / 2;
+      const dx      = e.clientX - centerX;
+      const dy      = e.clientY - centerY;
+      const dist    = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < MAGNETIC_RADIUS) {
+        // Pull toward cursor, clamped to MAX_DISPLACEMENT
+        const strength = (1 - dist / MAGNETIC_RADIUS);
+        const tx = dx * strength * (MAX_DISPLACEMENT / MAGNETIC_RADIUS) * 8;
+        const ty = dy * strength * (MAX_DISPLACEMENT / MAGNETIC_RADIUS) * 8;
+        const clampedX = Math.max(-MAX_DISPLACEMENT, Math.min(MAX_DISPLACEMENT, tx));
+        const clampedY = Math.max(-MAX_DISPLACEMENT, Math.min(MAX_DISPLACEMENT, ty));
+
+        dot.style.transition = "transform 0.15s ease-out";
+        dot.style.transform  = `translate(${clampedX}px, ${clampedY}px)`;
+
+        // Fire explosion once on field entry
+        if (!inField) {
+          inField = true;
+          explode();
+        }
+      } else {
+        // Snap back with elastic easing
+        dot.style.transition = "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
+        dot.style.transform  = "translate(0px, 0px)";
+        inField = false;
+      }
+    };
+
+    window.addEventListener("mousemove", onMouseMove);
+
+    return () => {
+      clearInterval(periodicId);
+      window.removeEventListener("mousemove", onMouseMove);
+    };
   }, []);
 
   return (
