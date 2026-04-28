@@ -10,6 +10,7 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const dotRef         = useRef<HTMLSpanElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -21,6 +22,17 @@ export default function Hero() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Dot ignition on mount
+  useEffect(() => {
+    const t1 = setTimeout(() => {
+      if (dotRef.current) dotRef.current.style.color = "#F9F200";
+    }, 1800);
+    const t2 = setTimeout(() => {
+      if (dotRef.current) dotRef.current.style.color = "#ffffff";
+    }, 2800);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   // Word cycling + scramble
@@ -337,7 +349,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
+            <span className="hero-line2">{`DAS Z\u00DCNDET`}<span ref={dotRef} style={{ color: "#ffffff", transition: "color 0.5s ease" }}>.</span></span>
           </h1>
 
           <p className="hero-sub">
