@@ -87,9 +87,8 @@ export default function Hero() {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const CELL             = 60;
-    const TRAIL_OPACITIES  = [0.5, 0.35, 0.2, 0.1, 0.05];
-    const DIRS             = [{ dc: 1, dr: 0 }, { dc: -1, dr: 0 }, { dc: 0, dr: 1 }, { dc: 0, dr: -1 }];
+    const CELL  = 60;
+    const DIRS  = [{ dc: 1, dr: 0 }, { dc: -1, dr: 0 }, { dc: 0, dr: 1 }, { dc: 0, dr: -1 }];
 
     const resize = () => {
       canvas.width  = canvas.offsetWidth;
@@ -128,6 +127,7 @@ export default function Hero() {
     const pts: Pt[] = [
       makePoint(Math.round(canvas.width  * 0.20 / CELL), Math.round(canvas.height * 0.30 / CELL), 1 / 1.2),
       makePoint(Math.round(canvas.width  * 0.70 / CELL), Math.round(canvas.height * 0.60 / CELL), 1 / 1.8),
+      makePoint(Math.round(canvas.width  * 0.50 / CELL), Math.round(canvas.height * 0.75 / CELL), 1 / 2.4),
     ];
 
     let last  = performance.now();
@@ -144,26 +144,36 @@ export default function Hero() {
 
         if (p.progress >= 1) {
           p.trail.push({ col: p.col, row: p.row });
-          if (p.trail.length > 5) p.trail.shift();
+          if (p.trail.length > 6) p.trail.shift();
           p.col = p.tcol;
           p.row = p.trow;
           pickDir(p);
         }
 
-        // smooth interpolated position
-        const px = (p.col + (p.tcol - p.col) * Math.min(p.progress, 1)) * CELL;
-        const py = (p.row + (p.trow - p.row) * Math.min(p.progress, 1)) * CELL;
+        // smooth interpolated head position
+        const prog = Math.min(p.progress, 1);
+        const px   = (p.col + (p.tcol - p.col) * prog) * CELL;
+        const py   = (p.row + (p.trow - p.row) * prog) * CELL;
 
-        // draw trail — index 0 is oldest, length-1 is newest
-        for (let i = 0; i < p.trail.length; i++) {
-          const opacity = TRAIL_OPACITIES[p.trail.length - 1 - i] ?? 0.05;
+        // build full position list: trail positions + current head
+        const positions = [
+          ...p.trail.map(t => ({ x: t.col * CELL, y: t.row * CELL })),
+          { x: px, y: py },
+        ];
+
+        // draw fading line segments — oldest segment has opacity ~0, head has 0.4
+        ctx.lineWidth   = 1;
+        ctx.lineCap     = "round";
+        for (let i = 1; i < positions.length; i++) {
+          const opacity = (i / (positions.length - 1)) * 0.4;
           ctx.beginPath();
-          ctx.arc(p.trail[i].col * CELL, p.trail[i].row * CELL, 2, 0, Math.PI * 2);
-          ctx.fillStyle = `rgba(249,242,0,${opacity})`;
-          ctx.fill();
+          ctx.moveTo(positions[i - 1].x, positions[i - 1].y);
+          ctx.lineTo(positions[i].x,     positions[i].y);
+          ctx.strokeStyle = `rgba(249,242,0,${opacity})`;
+          ctx.stroke();
         }
 
-        // draw point
+        // draw head dot
         ctx.beginPath();
         ctx.arc(px, py, 3, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(249,242,0,0.7)";
@@ -333,7 +343,7 @@ export default function Hero() {
           position: "absolute", bottom: 0, left: 0,
           width: "70vw", height: "70vh",
           pointerEvents: "none",
-          background: "radial-gradient(circle at 20% 80%, rgba(249,242,0,0.18) 0%, rgba(249,242,0,0.08) 25%, rgba(249,242,0,0.03) 40%, transparent 65%)",
+          background: "radial-gradient(circle at 5% 95%, rgba(249,242,0,0.12) 0%, rgba(249,242,0,0.05) 25%, transparent 50%)",
         }} />
 
         {/* Coordinates — bottom right */}
