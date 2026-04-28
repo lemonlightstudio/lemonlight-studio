@@ -69,15 +69,6 @@ export default function Hero() {
           from { opacity: 0; }
           to   { opacity: 1; }
         }
-        @keyframes dotColorShift {
-          0%   { color: #ffffff; }
-          50%  { color: #F9F200; }
-          100% { color: #ffffff; }
-        }
-        .hero-dot-shift {
-          animation: dotColorShift 3s ease-in-out infinite;
-        }
-
         .hero-section {
           position: relative;
           height: 100vh;
@@ -87,6 +78,10 @@ export default function Hero() {
           padding-left: 6vw;
           padding-right: 6vw;
           overflow: hidden;
+          border: none;
+          outline: none;
+          box-shadow: none;
+          font-family: var(--font-inter), Inter, sans-serif;
         }
         .hero-headline {
           margin: 0;
@@ -232,10 +227,10 @@ export default function Hero() {
         />
 
         {/* Content */}
-        <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
+        <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">DAS {`Z\u00DCNDET`}<span className="hero-dot-shift">.</span></span>
+            <span className="hero-line2">{`DAS Z\u00DCNDET.`}</span>
           </h1>
 
           <p className="hero-sub">
