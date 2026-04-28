@@ -33,7 +33,7 @@ export default function Footer() {
           <img
             src="/Logos/lemonlight_secondary_logo_yl-trans.png"
             alt="lemonlight studio"
-            style={{ height: "72px", width: "auto", display: "block", margin: "0 auto", opacity: 1 }}
+            style={{ width: "160px", height: "auto", display: "block", margin: "0 auto", opacity: 1 }}
           />
         </div>
 
