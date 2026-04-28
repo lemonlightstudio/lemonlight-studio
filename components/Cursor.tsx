@@ -1,23 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
 export default function Cursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
-  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
-    const target = { x: -100, y: -100 };
+    const target  = { x: -100, y: -100 };
     const current = { x: -100, y: -100 };
     let rafId: number;
 
     const onMove = (e: MouseEvent) => {
       target.x = e.clientX;
       target.y = e.clientY;
-    };
-
-    const onOver = (e: MouseEvent) => {
-      setHovered(!!(e.target as Element).closest?.("a, button"));
     };
 
     const tick = () => {
@@ -33,12 +28,10 @@ export default function Cursor() {
 
     rafId = requestAnimationFrame(tick);
     document.addEventListener("mousemove", onMove);
-    document.addEventListener("mouseover", onOver);
 
     return () => {
       cancelAnimationFrame(rafId);
       document.removeEventListener("mousemove", onMove);
-      document.removeEventListener("mouseover", onOver);
     };
   }, []);
 
@@ -52,15 +45,13 @@ export default function Cursor() {
           position: "fixed",
           top: 0,
           left: 0,
-          width: hovered ? 40 : 12,
-          height: hovered ? 40 : 12,
+          width: 8,
+          height: 8,
           borderRadius: "50%",
-          background: hovered ? "transparent" : "#F9F200",
-          border: hovered ? "1.5px solid #F9F200" : "1.5px solid transparent",
+          background: "#F9F200",
           pointerEvents: "none",
           zIndex: 9999,
           willChange: "transform",
-          transition: "width 0.15s ease, height 0.15s ease, background 0.15s ease, border-color 0.15s ease",
         }}
       />
     </>
