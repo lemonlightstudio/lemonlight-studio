@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 
-const WORDS = ["< WEBDESIGN />", "< BRANDING />", "< SOCIAL MEDIA />"];
+const WORDS = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
 const CHARS = '<>{}[]/=";:#!$';
 
 export default function Hero() {
@@ -88,7 +88,7 @@ export default function Hero() {
           padding: 0;
           font-family: var(--font-inter), sans-serif;
           font-weight: 700;
-          font-size: clamp(36px, 5.5vw, 90px);
+          font-size: clamp(64px, 9vw, 130px);
           line-height: 0.95;
           text-transform: uppercase;
         }
@@ -152,11 +152,11 @@ export default function Hero() {
 
         @media (max-width: 639px) {
           .hero-section  { padding-left: 24px; padding-right: 24px; }
-          .hero-headline { font-size: clamp(22px, 6vw, 40px); }
+          .hero-headline { font-size: clamp(40px, 11vw, 72px); }
         }
         @media (min-width: 640px) and (max-width: 1023px) {
           .hero-section  { padding-left: 6vw; padding-right: 6vw; }
-          .hero-headline { font-size: clamp(30px, 4.5vw, 64px); }
+          .hero-headline { font-size: clamp(56px, 8vw, 100px); }
         }
       `}</style>
 
