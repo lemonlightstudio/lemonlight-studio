@@ -1,0 +1,100 @@
+const NAV_LINKS = ["Work", "Studio", "Services", "Contact"];
+
+export default function Footer() {
+  return (
+    <>
+      <style>{`
+        .footer-nav-link {
+          font-family: var(--font-inter), sans-serif;
+          font-weight: 500;
+          font-size: 12px;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: rgba(255,255,255,0.35);
+          text-decoration: none;
+          transition: color 0.25s ease, opacity 0.25s ease;
+        }
+        .footer-nav-link:hover {
+          color: #F9F200;
+          opacity: 1;
+        }
+      `}</style>
+
+      <footer
+        style={{
+          background: "#0A0A0A",
+          borderTop: "1px solid rgba(255,255,255,0.06)",
+          padding: "80px 10vw 48px",
+        }}
+      >
+        {/* Logo */}
+        <div style={{ display: "flex", justifyContent: "center", marginBottom: "48px" }}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src="/Logos/lemonlight_secondary_logo_yl-trans.png"
+            alt="lemonlight studio"
+            style={{ height: "72px", width: "auto", display: "block", margin: "0 auto", opacity: 1 }}
+          />
+        </div>
+
+        {/* Nav links */}
+        <nav
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: "32px",
+            flexWrap: "wrap",
+            marginBottom: "64px",
+          }}
+        >
+          {NAV_LINKS.map((label) => (
+            <a
+              key={label}
+              href={`#${label.toLowerCase()}`}
+              className="footer-nav-link"
+            >
+              {label}
+            </a>
+          ))}
+        </nav>
+
+        {/* Bottom bar */}
+        <div
+          style={{
+            borderTop: "1px solid rgba(255,255,255,0.04)",
+            paddingTop: "32px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "12px",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-inter), sans-serif",
+              fontWeight: 400,
+              fontSize: "11px",
+              color: "rgba(255,255,255,0.25)",
+              letterSpacing: "0.05em",
+            }}
+          >
+            © 2025 lemonlight.studio
+          </span>
+          <span
+            style={{
+              fontFamily: "var(--font-inter), sans-serif",
+              fontWeight: 400,
+              fontSize: "11px",
+              color: "rgba(255,255,255,0.25)",
+              letterSpacing: "0.05em",
+            }}
+          >
+            Made with ♥ in Salzburg
+          </span>
+        </div>
+      </footer>
+    </>
+  );
+}
