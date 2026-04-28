@@ -165,7 +165,7 @@ export default function Hero() {
     if (!heroRef.current || !headlineRef.current) return;
     const ctx = gsap.context(() => {
       gsap.to(headlineRef.current, {
-        yPercent: -15,
+        yPercent: -25,
         ease: "none",
         scrollTrigger: {
           trigger: heroRef.current,
@@ -319,11 +319,10 @@ export default function Hero() {
           }}
         />
 
-        {/* Line-grid */}
+        {/* Dot-grid */}
         <div aria-hidden style={{
           position: "absolute", inset: 0, pointerEvents: "none",
-          backgroundImage:
-            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
+          backgroundImage: "radial-gradient(rgba(249,242,0,0.04) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }} />
 

@@ -53,17 +53,17 @@ export default function SectionDots() {
           width: 6px;
           height: 6px;
           border-radius: 50%;
-          background: rgba(249,242,0,0.25);
+          background: rgba(249,242,0,0.45);
           cursor: pointer;
           transition: background 0.3s ease, transform 0.3s ease;
           flex-shrink: 0;
         }
         .section-dot.active {
           background: #F9F200;
-          transform: scale(1.4);
+          transform: scale(1.5);
         }
         .section-dot:hover {
-          background: rgba(249,242,0,0.6);
+          background: rgba(249,242,0,0.8);
         }
         .section-dot-label {
           position: absolute;
