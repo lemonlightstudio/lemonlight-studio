@@ -33,9 +33,9 @@ export default function Statement() {
       scrollTrigger: {
         trigger: section,
         start: "top top",
-        end: `+=${words.length * 80}`,
+        end: () => `+=${section.offsetHeight * 3}`,
         pin: true,
-        scrub: true,
+        scrub: 1,
         anticipatePin: 1,
       },
     });
