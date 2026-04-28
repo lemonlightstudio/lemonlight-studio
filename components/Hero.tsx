@@ -64,15 +64,17 @@ export default function Hero() {
     let timeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
       if (dotRef.current) {
-        dotRef.current.style.transition   = "width 0.3s ease, border-radius 0.3s ease";
-        dotRef.current.style.width        = "1.8em";
+        dotRef.current.style.transition   = "width 0.3s ease, height 0.3s ease, border-radius 0.3s ease";
+        dotRef.current.style.width        = "1.4em";
+        dotRef.current.style.height       = "0.1em";
         dotRef.current.style.borderRadius = "2px";
       }
       clearTimeout(timeout);
       timeout = setTimeout(() => {
         if (dotRef.current) {
-          dotRef.current.style.transition   = "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease";
-          dotRef.current.style.width        = "0.25em";
+          dotRef.current.style.transition   = "width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), height 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.4s ease";
+          dotRef.current.style.width        = "0.18em";
+          dotRef.current.style.height       = "0.18em";
           dotRef.current.style.borderRadius = "50%";
         }
       }, 200);
@@ -132,13 +134,14 @@ export default function Hero() {
         }
         .hero-dot {
           display: inline-block;
-          width: 0.25em;
-          height: 0.12em;
+          width: 0.18em;
+          height: 0.18em;
           background: #F9F200;
           border-radius: 50%;
           vertical-align: middle;
-          margin-left: 0.05em;
-          transition: width 0.3s ease, border-radius 0.3s ease;
+          margin-left: 0.08em;
+          margin-bottom: 0.05em;
+          transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
         }
         .hero-sub {
           margin: 0;
