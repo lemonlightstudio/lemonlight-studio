@@ -157,11 +157,12 @@ export default function Hero() {
           to   { opacity: 1; }
         }
         @keyframes dotPulse {
-          0%, 100% { color: #ffffff; }
-          50%      { color: #F9F200; }
+          0%, 100% { color: #ffffff; transform: scale(1);    }
+          50%      { color: #F9F200; transform: scale(1.15); }
         }
         .hero-dot-pulse {
-          animation: dotPulse 2.5s ease-in-out infinite;
+          display: inline-block;
+          animation: dotPulse 2.2s ease-in-out infinite;
         }
         .hero-section {
           position: relative;
@@ -293,9 +294,10 @@ export default function Hero() {
 
         {/* Yellow glow — bottom left */}
         <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          background: "radial-gradient(ellipse at 0% 100%, #F9F200 0%, transparent 60%)",
-          opacity: 0.06,
+          position: "absolute", bottom: 0, left: 0,
+          width: "70vw", height: "70vh",
+          pointerEvents: "none",
+          background: "radial-gradient(circle at 20% 80%, rgba(249,242,0,0.18) 0%, rgba(249,242,0,0.08) 25%, rgba(249,242,0,0.03) 40%, transparent 65%)",
         }} />
 
         {/* Coordinates — bottom right */}
