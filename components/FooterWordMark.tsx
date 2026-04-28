@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 
 const WORDS = [
-  { prefix: "lemon", suffix: "light."       },
-  { prefix: "lemon", suffix: "light.studio" },
-  { prefix: "lemon", suffix: "light.web"    },
-  { prefix: "lemon", suffix: "light.design" },
-  { prefix: "lemon", suffix: "light.social" },
+  { prefix: "lemonlight", suffix: "."       },
+  { prefix: "lemonlight", suffix: ".studio" },
+  { prefix: "lemonlight", suffix: ".web"    },
+  { prefix: "lemonlight", suffix: ".design" },
+  { prefix: "lemonlight", suffix: ".social" },
 ];
 
 export default function FooterWordMark() {
@@ -77,7 +77,7 @@ export default function FooterWordMark() {
       style={{
         textAlign:     "center",
         marginBottom:  "48px",
-        fontSize:      "clamp(36px, 5.5vw, 96px)",
+        fontSize:      "clamp(56px, 8vw, 130px)",
         fontWeight:    900,
         fontFamily:    "var(--font-inter), Inter, sans-serif",
         letterSpacing: "-0.02em",
