@@ -31,6 +31,9 @@ export default function Footer() {
           color: #F9F200;
           opacity: 1;
         }
+        .footer-logo:hover {
+          transform: scale(1.03);
+        }
       `}</style>
 
       <footer
@@ -46,7 +49,8 @@ export default function Footer() {
           <img
             src="/Logos/lemonlight_secondary_logo_yl-trans.png"
             alt="lemonlight studio"
-            style={{ width: "180px", height: "auto", display: "block", margin: "0 auto", opacity: 1 }}
+            className="footer-logo"
+            style={{ width: "180px", height: "auto", display: "block", margin: "0 auto", opacity: 1, transition: "transform 0.4s ease" }}
           />
         </div>
 

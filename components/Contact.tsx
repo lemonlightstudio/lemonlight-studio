@@ -62,6 +62,9 @@ export default function Contact() {
         .contact-email:hover {
           color: #F9F200;
         }
+        .contact-email:hover .contact-arrow {
+          transform: translateX(6px);
+        }
         .contact-social {
           font-family: var(--font-inter), sans-serif;
           font-weight: 500;
@@ -175,7 +178,7 @@ export default function Contact() {
         <div>
           <a href="mailto:hey@lemonlight.studio" className="contact-email">
             hey@lemonlight.studio
-            <span style={{ color: "#F9F200", fontSize: "28px", lineHeight: 1 }}>→</span>
+            <span className="contact-arrow" style={{ color: "#F9F200", fontSize: "28px", lineHeight: 1, display: "inline-block", transition: "transform 0.3s ease" }}>→</span>
           </a>
         </div>
 
