@@ -95,12 +95,24 @@ export default function Hero() {
         .hero-rotating-word {
           display: block;
           color: #F9F200;
+          margin-bottom: 0.15em;
         }
         .hero-line2 {
           display: block;
           color: #F2F2EE;
           opacity: 0;
           animation: fadeUp 0.8s ease-out 0.3s forwards;
+        }
+        @keyframes dotBlink {
+          0%, 100% { opacity: 1; }
+          15%       { opacity: 0; }
+          30%       { opacity: 1; }
+        }
+        .hero-dot {
+          color: #F9F200;
+          text-shadow: 0 0 20px rgba(249,242,0,0.4);
+          animation: dotBlink 3s ease-in-out infinite;
+          display: inline-block;
         }
         .hero-sub {
           margin: 0;
@@ -225,7 +237,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">DAS {"Z\u00DCNDET."}</span>
+            <span className="hero-line2">DAS {"Z\u00DCNDET"}<span className="hero-dot">.</span></span>
           </h1>
 
           <p className="hero-sub">
