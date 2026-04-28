@@ -65,7 +65,7 @@ export default function Hero() {
     const onScroll = () => {
       if (dotRef.current) {
         dotRef.current.style.transition   = "width 0.3s ease, height 0.3s ease, border-radius 0.3s ease";
-        dotRef.current.style.width        = "1.4em";
+        dotRef.current.style.width        = "0.4em";
         dotRef.current.style.height       = "0.1em";
         dotRef.current.style.borderRadius = "2px";
       }
@@ -138,9 +138,8 @@ export default function Hero() {
           height: 0.18em;
           background: #F9F200;
           border-radius: 50%;
-          vertical-align: middle;
-          margin-left: 0.08em;
-          margin-bottom: 0.05em;
+          vertical-align: baseline;
+          margin-left: 0.06em;
           transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
         }
         .hero-sub {
