@@ -59,69 +59,37 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
-  // Magnetic pull
+  // Dot scroll morph
   useEffect(() => {
-    const dot = dotRef.current;
-    if (!dot) return;
-
-    const MAGNETIC_RADIUS  = 120;
-    const MAX_DISPLACEMENT = 14;
-    let inField = false;
-
-    const onMouseMove = (e: MouseEvent) => {
-      const rect    = dot.getBoundingClientRect();
-      const centerX = rect.left + rect.width  / 2;
-      const centerY = rect.top  + rect.height / 2;
-      const dx      = e.clientX - centerX;
-      const dy      = e.clientY - centerY;
-      const dist    = Math.sqrt(dx * dx + dy * dy);
-
-      if (dist < MAGNETIC_RADIUS) {
-        const strength = 1 - dist / MAGNETIC_RADIUS;
-        const tx = dx * strength * (MAX_DISPLACEMENT / MAGNETIC_RADIUS) * 8;
-        const ty = dy * strength * (MAX_DISPLACEMENT / MAGNETIC_RADIUS) * 8;
-        const cx = Math.max(-MAX_DISPLACEMENT, Math.min(MAX_DISPLACEMENT, tx));
-        const cy = Math.max(-MAX_DISPLACEMENT, Math.min(MAX_DISPLACEMENT, ty));
-        dot.style.transition = "transform 0.15s ease-out";
-        dot.style.transform  = `translate(${cx}px, ${cy}px)`;
-        inField = true;
-      } else if (inField) {
-        dot.style.transition = "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)";
-        dot.style.transform  = "translate(0px, 0px)";
-        inField = false;
-      }
-    };
-
-    window.addEventListener("mousemove", onMouseMove);
-    return () => window.removeEventListener("mousemove", onMouseMove);
-  }, []);
-
-  // Scroll morph: circle → pill when scrolling, back when idle
-  useEffect(() => {
-    const dot = dotRef.current;
-    if (!dot) return;
-
-    let debounce: ReturnType<typeof setTimeout> | null = null;
-
+    let timeout: ReturnType<typeof setTimeout>;
     const onScroll = () => {
-      // Stretch to pill
-      dot.style.transition   = "width 0.4s ease, border-radius 0.4s ease";
-      dot.style.width        = "3ch";
-      dot.style.borderRadius = "2px";
-
-      // Debounce snap-back
-      if (debounce) clearTimeout(debounce);
-      debounce = setTimeout(() => {
-        dot.style.transition   = "width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), border-radius 0.5s ease";
-        dot.style.width        = "1ch";
-        dot.style.borderRadius = "50%";
-      }, 150);
+      if (dotRef.current) {
+        dotRef.current.style.transition    = "all 0.3s ease";
+        dotRef.current.style.width         = "28px";
+        dotRef.current.style.borderRadius  = "3px";
+        dotRef.current.style.display       = "inline-block";
+        dotRef.current.style.height        = "0.12em";
+        dotRef.current.style.verticalAlign = "middle";
+        dotRef.current.style.background    = "#F9F200";
+        dotRef.current.style.color         = "transparent";
+      }
+      clearTimeout(timeout);
+      timeout = setTimeout(() => {
+        if (dotRef.current) {
+          dotRef.current.style.transition    = "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)";
+          dotRef.current.style.width         = "";
+          dotRef.current.style.borderRadius  = "";
+          dotRef.current.style.height        = "";
+          dotRef.current.style.background    = "";
+          dotRef.current.style.color         = "";
+          dotRef.current.style.verticalAlign = "";
+        }
+      }, 200);
     };
-
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", onScroll);
-      if (debounce) clearTimeout(debounce);
+      clearTimeout(timeout);
     };
   }, []);
 
