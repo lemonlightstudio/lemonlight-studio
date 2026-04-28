@@ -3,32 +3,10 @@
 import { useEffect, useRef, useState } from "react";
 
 const WORDS = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
-
-const scrambleToNext = (nextWord: string, setter: (s: string) => void) => {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-  let count = 0;
-  const max = 10;
-  const id = setInterval(() => {
-    if (count >= max) {
-      clearInterval(id);
-      setter(nextWord);
-      return;
-    }
-    setter(
-      nextWord
-        .split("")
-        .map((c) =>
-          c === " " ? " " : chars[Math.floor(Math.random() * chars.length)]
-        )
-        .join("")
-    );
-    count++;
-  }, 40);
-};
+const CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
 export default function Hero() {
-  const [displayWord, setDisplayWord] = useState(WORDS[0]);
-  const wordIndexRef   = useRef(0);
+  const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
 
   // Scroll progress
@@ -43,14 +21,40 @@ export default function Hero() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Word cycling
+  // Word cycling + scramble
   useEffect(() => {
-    const id = setInterval(() => {
-      const next = (wordIndexRef.current + 1) % WORDS.length;
-      wordIndexRef.current = next;
-      scrambleToNext(WORDS[next], setDisplayWord);
-    }, 2500);
-    return () => clearInterval(id);
+    let currentIndex = 0;
+
+    const runScramble = (target: string) => {
+      let frame = 0;
+      const total = 14;
+      const id = setInterval(() => {
+        if (frame >= total) {
+          clearInterval(id);
+          setDisplay(target);
+          return;
+        }
+        const progress  = frame / total;
+        const revealed  = Math.floor(progress * target.length);
+        const scrambled = target
+          .split("")
+          .map((char, i) => {
+            if (char === " ") return " ";
+            if (i < revealed) return char;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          })
+          .join("");
+        setDisplay(scrambled);
+        frame++;
+      }, 40);
+    };
+
+    const main = setInterval(() => {
+      currentIndex = (currentIndex + 1) % WORDS.length;
+      runScramble(WORDS[currentIndex]);
+    }, 2800);
+
+    return () => clearInterval(main);
   }, []);
 
   return (
@@ -220,7 +224,7 @@ export default function Hero() {
         {/* Content */}
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
-            <span className="hero-rotating-word">{displayWord}</span>
+            <span className="hero-rotating-word">{display}</span>
             <span className="hero-line2">DAS {"Z\u00DCNDET."}</span>
           </h1>
 
