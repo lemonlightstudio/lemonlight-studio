@@ -13,6 +13,9 @@ export default function ScrollRestoration() {
     }
     const handleScroll = () => {
       sessionStorage.setItem("scrollY", window.scrollY.toString());
+      const progress = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      const opacity = (0.018 - progress * 0.014).toFixed(4);
+      document.body.style.setProperty("--grid-opacity", opacity);
     };
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);

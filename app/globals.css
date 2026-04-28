@@ -4,6 +4,7 @@
   --black: #0A0A0A;
   --yellow: #F9F200;
   --white: #F2F2EE;
+  --grid-opacity: 0.018;
 }
 
 *,
@@ -22,9 +23,10 @@ body {
 body {
   background-color: #0A0A0A;
   background-image:
-    linear-gradient(rgba(249,242,0,0.025) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(249,242,0,0.025) 1px, transparent 1px);
+    linear-gradient(rgba(249,242,0,var(--grid-opacity)) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(249,242,0,var(--grid-opacity)) 1px, transparent 1px);
   background-size: 60px 60px;
+  background-attachment: fixed;
   color: var(--white);
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;

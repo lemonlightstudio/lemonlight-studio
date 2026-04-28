@@ -319,22 +319,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Dot-grid */}
-        <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
-          backgroundImage: "radial-gradient(rgba(249,242,0,0.04) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
-
-        {/* Line-grid — on top of dots */}
-        <div aria-hidden style={{
-          position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
-          pointerEvents: "none", zIndex: 0,
-          backgroundImage:
-            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
-
         {/* Grain */}
         <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -405,6 +389,15 @@ export default function Hero() {
             Projekt starten
           </a>
         </div>
+
+        {/* Bottom fade — hero into next section */}
+        <div aria-hidden style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: "200px",
+          background: "linear-gradient(to bottom, transparent, #0A0A0A)",
+          pointerEvents: "none",
+          zIndex: 2,
+        }} />
 
       </section>
 
