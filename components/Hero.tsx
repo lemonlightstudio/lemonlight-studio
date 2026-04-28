@@ -321,8 +321,17 @@ export default function Hero() {
 
         {/* Dot-grid */}
         <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
+          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
           backgroundImage: "radial-gradient(rgba(249,242,0,0.04) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+        }} />
+
+        {/* Line-grid — on top of dots */}
+        <div aria-hidden style={{
+          position: "absolute", top: 0, left: 0, width: "100%", height: "100%",
+          pointerEvents: "none", zIndex: 0,
+          backgroundImage:
+            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }} />
 
