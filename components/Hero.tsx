@@ -9,7 +9,6 @@ const CHARS = '<>{}[]/=";:#!$';
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const logoRef        = useRef<HTMLImageElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -59,17 +58,6 @@ export default function Hero() {
     return () => clearInterval(main);
   }, []);
 
-  // Logo parallax
-  useEffect(() => {
-    const onScroll = () => {
-      if (!logoRef.current) return;
-      const offset = window.scrollY * 0.08;
-      logoRef.current.style.transform = `translateY(calc(-50% + ${offset}px))`;
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
     <>
       <style>{`
@@ -80,6 +68,14 @@ export default function Hero() {
         @keyframes fadeIn {
           from { opacity: 0; }
           to   { opacity: 1; }
+        }
+        @keyframes dotColorShift {
+          0%   { color: #ffffff; }
+          50%  { color: #F9F200; }
+          100% { color: #ffffff; }
+        }
+        .hero-dot-shift {
+          animation: dotColorShift 3s ease-in-out infinite;
         }
 
         .hero-section {
@@ -202,27 +198,26 @@ export default function Hero() {
           opacity: 0.06,
         }} />
 
-        {/* Decorative logo — right side */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          ref={logoRef}
-          aria-hidden
-          src="/Logos/L_yellow.png"
-          alt=""
-          style={{
-            position: "absolute",
-            right: "-10%",
-            top: "50%",
-            transform: "translateY(-50%)",
-            width: "clamp(380px, 42vw, 580px)",
-            opacity: 0.05,
-            filter: "blur(0.8px)",
-            display: "block",
-            userSelect: "none",
-            pointerEvents: "none",
-            zIndex: 0,
-          }}
-        />
+        {/* Coordinates — bottom right */}
+        <div aria-hidden style={{
+          position: "absolute", bottom: "48px", right: "6vw",
+          pointerEvents: "none", zIndex: 0, userSelect: "none",
+          textAlign: "right",
+        }}>
+          <div style={{
+            fontFamily: "monospace", fontSize: "11px",
+            color: "rgba(255,255,255,0.18)", letterSpacing: "0.15em",
+          }}>
+            47.8095° N / 13.0389° E
+          </div>
+          <div style={{
+            fontFamily: "monospace", fontSize: "10px",
+            color: "rgba(255,255,255,0.12)", letterSpacing: "0.15em",
+            marginTop: "4px",
+          }}>
+            SALZBURG, AUSTRIA
+          </div>
+        </div>
 
         {/* Scroll progress — left edge */}
         <div
@@ -240,7 +235,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">DAS {`Z\u00DCNDET.`}</span>
+            <span className="hero-line2">DAS {`Z\u00DCNDET`}<span className="hero-dot-shift">.</span></span>
           </h1>
 
           <p className="hero-sub">
