@@ -1,4 +1,4 @@
-import LogoDissolve from "@/components/LogoDissolve";
+import FooterWordMark from "@/components/FooterWordMark";
 
 const NAV_LINKS = ["Work", "Studio", "Services", "Contact"];
 
@@ -42,10 +42,8 @@ export default function Footer() {
           padding: "80px 10vw 48px",
         }}
       >
-        {/* Logo */}
-        <div style={{ display: "flex", justifyContent: "center", marginBottom: "48px" }}>
-          <LogoDissolve />
-        </div>
+        {/* Word mark with dissolve */}
+        <FooterWordMark />
 
         {/* Nav links */}
         <nav
@@ -87,26 +85,10 @@ export default function Footer() {
             gap: "12px",
           }}
         >
-          <span
-            style={{
-              fontFamily: "var(--font-inter), sans-serif",
-              fontWeight: 400,
-              fontSize: "11px",
-              color: "rgba(255,255,255,0.25)",
-              letterSpacing: "0.05em",
-            }}
-          >
+          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 400, fontSize: "11px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.05em" }}>
             © 2026 lemonlight.studio
           </span>
-          <span
-            style={{
-              fontFamily: "var(--font-inter), sans-serif",
-              fontWeight: 400,
-              fontSize: "11px",
-              color: "rgba(255,255,255,0.25)",
-              letterSpacing: "0.05em",
-            }}
-          >
+          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 400, fontSize: "11px", color: "rgba(255,255,255,0.25)", letterSpacing: "0.05em" }}>
             Made with ♥ in Zell am See
           </span>
         </div>
