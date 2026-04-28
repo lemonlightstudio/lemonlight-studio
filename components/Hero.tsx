@@ -103,16 +103,8 @@ export default function Hero() {
           opacity: 0;
           animation: fadeUp 0.8s ease-out 0.3s forwards;
         }
-        @keyframes dotBlink {
-          0%, 100% { opacity: 1; }
-          15%       { opacity: 0; }
-          30%       { opacity: 1; }
-        }
         .hero-dot {
           color: #F9F200;
-          text-shadow: 0 0 20px rgba(249,242,0,0.4);
-          animation: dotBlink 3s ease-in-out infinite;
-          display: inline-block;
         }
         .hero-sub {
           margin: 0;
