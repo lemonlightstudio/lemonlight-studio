@@ -12,6 +12,10 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "lemonlight.",
   description: "lemonlight studio — creative agency",
+  icons: {
+    icon: "/favicon.png",
+    apple: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
