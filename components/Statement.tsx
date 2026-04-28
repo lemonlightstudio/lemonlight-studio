@@ -95,7 +95,7 @@ export default function Statement() {
         ))}
       </p>
       {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img src="/Logos/L_yellow.png" alt="" style={{ position: "absolute", bottom: "48px", right: "6vw", width: "100px", opacity: 0.12, pointerEvents: "none" }} />
+      <img src="/Logos/L_yellow.png" alt="" style={{ position: "absolute", bottom: "48px", right: "6vw", width: "100px", opacity: 0.90, pointerEvents: "none" }} />
     </section>
   );
 }
