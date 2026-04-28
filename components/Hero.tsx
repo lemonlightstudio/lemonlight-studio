@@ -5,9 +5,12 @@ import { useEffect, useRef, useState } from "react";
 const WORDS = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
 const CHARS = '<>{}[]/=";:#!$';
 
+const ANGLES_RAD = [0, 72, 144, 216, 288].map((d) => (d * Math.PI) / 180);
+
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const dotRef         = useRef<HTMLSpanElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -55,6 +58,54 @@ export default function Hero() {
     }, 2800);
 
     return () => clearInterval(main);
+  }, []);
+
+  // Particle explosion on dot every 4s
+  useEffect(() => {
+    const explode = () => {
+      const dot = dotRef.current;
+      if (!dot) return;
+
+      // Dot pulse
+      dot.animate(
+        [{ transform: "scale(1)" }, { transform: "scale(1.3)" }, { transform: "scale(1)" }],
+        { duration: 300, easing: "ease-in-out" }
+      );
+
+      // Particles
+      ANGLES_RAD.forEach((angle) => {
+        const dist = 12 + Math.random() * 6;
+        const x    = Math.cos(angle) * dist;
+        const y    = Math.sin(angle) * dist;
+
+        const p = document.createElement("div");
+        p.style.cssText = [
+          "position:absolute",
+          "width:3px",
+          "height:3px",
+          "border-radius:50%",
+          "background:#F9F200",
+          "top:50%",
+          "left:50%",
+          "pointer-events:none",
+          "z-index:10",
+        ].join(";");
+        dot.appendChild(p);
+
+        p.animate(
+          [
+            { transform: "translate(-50%,-50%) scale(1)", opacity: "1" },
+            { transform: `translate(calc(-50% + ${x}px),calc(-50% + ${y}px)) scale(0)`, opacity: "0" },
+          ],
+          { duration: 500, easing: "ease-out", fill: "forwards" }
+        );
+
+        setTimeout(() => p.remove(), 520);
+      });
+    };
+
+    const id = setInterval(explode, 4000);
+    return () => clearInterval(id);
   }, []);
 
   return (
@@ -229,7 +280,14 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <span className="hero-line2">DAS {"Z\u00DCNDET"}<span className="hero-dot">.</span></span>
+            <span className="hero-line2">
+              DAS {"Z\u00DCNDET"}
+              <span
+                ref={dotRef}
+                className="hero-dot"
+                style={{ position: "relative", display: "inline-block" }}
+              >.</span>
+            </span>
           </h1>
 
           <p className="hero-sub">
