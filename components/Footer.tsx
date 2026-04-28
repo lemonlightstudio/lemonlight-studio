@@ -80,7 +80,7 @@ export default function Footer() {
               letterSpacing: "0.05em",
             }}
           >
-            © 2025 lemonlight.studio
+            © 2026 lemonlight.studio
           </span>
           <span
             style={{
