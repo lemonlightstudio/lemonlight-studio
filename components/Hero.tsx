@@ -1,88 +1,125 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-const WORDS   = ["DESIGN", "WEB", "SOCIAL"];
-const CHARS   = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#@!%";
-const DISPLAY_MS  = 2500;
-const SCRAMBLE_MS =  800;
-const ITERATIONS  =    8; // steps to resolve
-const TICK_MS     =   40; // ms per scramble tick
+const WORDS        = ["WEBDESIGN", "BRANDING", "SOCIAL"];
+const ALPHA        = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+const DISPLAY_MS   = 2200; // how long each word is shown
+const OUT_MS       = 250;  // outgoing slide duration
+const IN_MS        = 250;  // incoming slide duration
+const SCRAMBLE_ITER = 8;
+const SCRAMBLE_TICK = 35;
 
-function randomChar() {
-  return CHARS[Math.floor(Math.random() * CHARS.length)];
+function runScramble(target: string, el: HTMLElement): ReturnType<typeof setInterval> {
+  let step = 0;
+  const iv = setInterval(() => {
+    const resolved = target.slice(0, step);
+    const noise    = Array.from(
+      { length: target.length - step },
+      () => ALPHA[Math.floor(Math.random() * ALPHA.length)]
+    ).join("");
+    el.textContent = resolved + noise;
+    step++;
+    if (step > SCRAMBLE_ITER) {
+      clearInterval(iv);
+      el.textContent = target;
+    }
+  }, SCRAMBLE_TICK);
+  return iv;
 }
 
 export default function Hero() {
-  const [logoRotation, setLogoRotation]   = useState(0);
-  const [displayText,  setDisplayText]    = useState(WORDS[0]);
-  const wordIndex   = useRef(0);
-  const scrambleRef = useRef<ReturnType<typeof setInterval> | null>(null);
-  const displayRef  = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const slotsRef        = useRef<(HTMLDivElement | null)[]>([null, null]);
+  const activeSlotRef   = useRef(0);           // index into slotsRef of the visible slot
+  const wordIdxRef      = useRef([0, 1]);      // which WORDS index each slot shows
+  const timersRef       = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const scrambleRef     = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Logo cursor tracking
   useEffect(() => {
-    const move = (e: MouseEvent) => {
-      setLogoRotation(((e.clientX / window.innerWidth) - 0.5) * 10);
-    };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, []);
+    const slots = slotsRef.current;
 
-  // Scramble → resolve → next word loop
-  useEffect(() => {
-    function scrambleTo(target: string) {
-      let step = 0;
-      if (scrambleRef.current) clearInterval(scrambleRef.current);
+    // ── Initial state ───────────────────────────────────────────
+    const s0 = slots[0]!;
+    const s1 = slots[1]!;
+    s0.textContent = WORDS[0];
+    s0.style.transform = "translateY(0)";
+    s0.style.opacity   = "1";
+    s0.style.filter    = "blur(0px)";
+    s1.textContent = WORDS[1];
+    s1.style.transform = "translateY(110%)";
+    s1.style.opacity   = "0";
+    s1.style.filter    = "blur(4px)";
 
-      scrambleRef.current = setInterval(() => {
-        // Resolve `step` characters from the left; randomise the rest
-        const resolved = target.slice(0, step);
-        const scrambled = Array.from({ length: target.length - step }, randomChar).join("");
-        setDisplayText(resolved + scrambled);
-        step++;
-
-        if (step > ITERATIONS) {
-          // Snap to final, then hold
-          setDisplayText(target);
-          clearInterval(scrambleRef.current!);
-          scrambleRef.current = null;
-
-          // Schedule next word
-          displayRef.current = setTimeout(() => {
-            wordIndex.current = (wordIndex.current + 1) % WORDS.length;
-            scrambleTo(WORDS[wordIndex.current]);
-          }, DISPLAY_MS);
-        }
-      }, TICK_MS);
+    function later(fn: () => void, ms: number) {
+      const t = setTimeout(fn, ms);
+      timersRef.current.push(t);
     }
 
-    // Initial hold then start cycling
-    displayRef.current = setTimeout(() => {
-      wordIndex.current = 1;
-      scrambleTo(WORDS[1]);
-    }, DISPLAY_MS);
+    function cycle() {
+      const active      = activeSlotRef.current;
+      const curEl       = slots[active]!;
+      const nxtEl       = slots[1 - active]!;
+      const nextWordIdx = (wordIdxRef.current[active] + 1) % WORDS.length;
+
+      // 1. Slide outgoing word up + fade + blur
+      curEl.style.transition = `transform ${OUT_MS}ms ease, opacity ${OUT_MS}ms ease, filter ${OUT_MS}ms ease`;
+      curEl.style.transform  = "translateY(-110%)";
+      curEl.style.opacity    = "0";
+      curEl.style.filter     = "blur(4px)";
+
+      later(() => {
+        // 2. Pre-position incoming slot at bottom (snap, no transition)
+        nxtEl.textContent  = WORDS[nextWordIdx];
+        nxtEl.style.transition = "none";
+        nxtEl.style.transform  = "translateY(110%)";
+        nxtEl.style.opacity    = "0";
+        nxtEl.style.filter     = "blur(4px)";
+        void nxtEl.offsetWidth; // force reflow
+
+        // Kick off scramble on incoming element
+        if (scrambleRef.current) clearInterval(scrambleRef.current);
+        scrambleRef.current = runScramble(WORDS[nextWordIdx], nxtEl);
+
+        // 3. Slide incoming word in + unblur
+        nxtEl.style.transition = `transform ${IN_MS}ms ease, opacity ${IN_MS}ms ease, filter ${IN_MS}ms ease`;
+        nxtEl.style.transform  = "translateY(0)";
+        nxtEl.style.opacity    = "1";
+        nxtEl.style.filter     = "blur(0px)";
+
+        later(() => {
+          // 4. Swap active slot
+          const newActive = 1 - active;
+          activeSlotRef.current        = newActive;
+          wordIdxRef.current[newActive] = nextWordIdx;
+
+          // Reset old current to standby position (snap)
+          const futureWordIdx = (nextWordIdx + 1) % WORDS.length;
+          curEl.style.transition = "none";
+          curEl.style.transform  = "translateY(110%)";
+          curEl.style.opacity    = "0";
+          curEl.style.filter     = "blur(4px)";
+          curEl.textContent      = WORDS[futureWordIdx];
+          wordIdxRef.current[active] = futureWordIdx;
+
+          later(cycle, DISPLAY_MS);
+        }, IN_MS);
+      }, OUT_MS);
+    }
+
+    later(cycle, DISPLAY_MS);
 
     return () => {
+      timersRef.current.forEach(clearTimeout);
       if (scrambleRef.current) clearInterval(scrambleRef.current);
-      if (displayRef.current)  clearTimeout(displayRef.current);
     };
   }, []);
-
-  // Widest word sets min-width to prevent layout shift
-  const minWidth = `${Math.max(...WORDS.map((w) => w.length))}ch`;
 
   return (
     <>
       <style>{`
-        /* ── Keyframes ── */
         @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(40px); }
+          from { opacity: 0; transform: translateY(32px); }
           to   { opacity: 1; transform: translateY(0);    }
-        }
-        @keyframes fadeUpScale {
-          from { opacity: 0; transform: translateY(30px) scale(0.95); }
-          to   { opacity: 1; transform: translateY(0)    scale(1);    }
         }
         @keyframes fadeIn {
           from { opacity: 0; }
@@ -90,46 +127,9 @@ export default function Hero() {
         }
         @keyframes float {
           0%, 100% { transform: translateY(0px);   }
-          50%       { transform: translateY(-12px); }
+          50%      { transform: translateY(-12px); }
         }
 
-        /* ── Text animations ── */
-        .hero-word {
-          display: inline-block;
-          opacity: 0;
-          animation: fadeUp 0.8s ease-out forwards;
-        }
-        .hero-word-1 { animation-delay: 0.1s;  }
-        .hero-word-2 { animation-delay: 0.25s; }
-
-        .hero-line2 {
-          display: inline-block;
-          opacity: 0;
-          animation: fadeUpScale 0.9s ease-out 0.5s forwards;
-        }
-        .hero-sub {
-          opacity: 0;
-          animation: fadeIn 0.7s ease-out 0.8s forwards;
-        }
-        .hero-buttons-wrap {
-          opacity: 0;
-          animation: fadeIn 0.7s ease-out 1s forwards;
-        }
-
-        /* ── Scramble word ── */
-        .hero-scramble {
-          display: inline-block;
-          color: #F9F200;
-          font-variant-numeric: tabular-nums;
-          letter-spacing: 0.01em;
-        }
-
-        /* ── Logo float ── */
-        .logo-float {
-          animation: float 4s ease-in-out infinite;
-        }
-
-        /* ── Layout ── */
         .hero-section {
           position: relative;
           height: 100vh;
@@ -150,53 +150,91 @@ export default function Hero() {
           text-transform: uppercase;
         }
 
-        /* ── Buttons ── */
-        .hero-buttons {
-          display: flex;
-          flex-direction: row;
-          gap: 16px;
-          margin-top: 48px;
+        /* Slot container: clips the sliding words */
+        .hero-word-container {
+          display: block;
+          overflow: hidden;
+          position: relative;
+          height: 1em;
         }
-        .hero-btn {
+
+        /* Individual word slots */
+        .hero-slot {
+          position: absolute;
+          top: 0;
+          left: 0;
+          color: #F9F200;
+          text-shadow: 0 0 35px rgba(249,242,0,0.2);
+          will-change: transform, opacity, filter;
+        }
+
+        /* Line 2 */
+        .hero-line2 {
+          display: block;
+          color: #F2F2EE;
+          opacity: 0;
+          animation: fadeUp 0.8s ease-out 0.3s forwards;
+        }
+
+        /* Subline */
+        .hero-sub {
+          margin: 0;
+          margin-top: 24px;
+          font-family: var(--font-inter), sans-serif;
+          font-weight: 400;
+          font-size: clamp(16px, 1.8vw, 20px);
+          color: rgba(255,255,255,0.6);
+          max-width: 540px;
+          line-height: 1.55;
+          opacity: 0;
+          animation: fadeIn 0.7s ease-out 0.65s forwards;
+        }
+
+        /* Trust line */
+        .hero-trust {
+          margin: 0;
+          margin-top: 12px;
+          font-family: var(--font-inter), sans-serif;
+          font-weight: 400;
+          font-size: 13px;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: rgba(255,255,255,0.35);
+          opacity: 0;
+          animation: fadeIn 0.7s ease-out 0.85s forwards;
+        }
+
+        /* CTA */
+        .hero-cta {
+          display: inline-block;
+          margin-top: 48px;
           font-family: var(--font-inter), sans-serif;
           font-weight: 700;
           font-size: 12px;
           text-transform: uppercase;
-          letter-spacing: 0.1em;
-          padding: 16px 32px;
-          text-decoration: none;
-          display: inline-block;
-          text-align: center;
-          transition: color 0.2s ease, transform 0.2s ease;
-        }
-        .hero-btn-primary {
+          letter-spacing: 0.12em;
           color: #0A0A0A;
           background: #F9F200;
+          padding: 18px 40px;
+          text-decoration: none;
+          transition: opacity 0.2s ease, transform 0.2s ease;
+          opacity: 0;
+          animation: fadeIn 0.7s ease-out 1s forwards;
         }
-        .hero-btn-primary:hover {
-          transform: translateY(-3px);
-        }
-        .hero-btn-secondary {
-          color: #F2F2EE;
-          background: transparent;
-        }
-        .hero-btn-secondary:hover {
-          color: #F9F200;
-        }
-        .hero-arrow {
-          display: inline-block;
-          transition: transform 0.2s ease;
-        }
-        .hero-btn-secondary:hover .hero-arrow {
-          transform: translateX(4px);
+        .hero-cta:hover {
+          opacity: 0.88;
+          transform: scale(1.01);
         }
 
-        /* ── Responsive ── */
+        /* Logo float */
+        .logo-float {
+          animation: float 4s ease-in-out infinite;
+        }
+
+        /* Responsive */
         @media (max-width: 639px) {
-          .hero-section    { padding-left: 24px; padding-right: 24px; }
-          .hero-headline   { font-size: clamp(48px, 12vw, 80px); }
-          .hero-buttons    { flex-direction: column; }
-          .hero-btn        { width: 100%; }
+          .hero-section  { padding-left: 24px; padding-right: 24px; }
+          .hero-headline { font-size: clamp(48px, 12vw, 80px); }
         }
         @media (min-width: 640px) and (max-width: 1023px) {
           .hero-section  { padding-left: 48px; padding-right: 48px; }
@@ -205,32 +243,25 @@ export default function Hero() {
       `}</style>
 
       <section className="hero-section">
-        {/* Dot-grid background */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage: "radial-gradient(circle, rgba(249,242,0,0.04) 1px, transparent 1px)",
-            backgroundSize: "24px 24px",
-            pointerEvents: "none",
-          }}
-        />
 
-        {/* Line-grid background */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-            pointerEvents: "none",
-          }}
-        />
+        {/* Dot-grid */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0,
+          backgroundImage: "radial-gradient(circle, rgba(249,242,0,0.04) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+          pointerEvents: "none",
+        }} />
 
-        {/* Grain overlay */}
+        {/* Line-grid */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0,
+          backgroundImage:
+            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
+          pointerEvents: "none",
+        }} />
+
+        {/* Grain */}
         <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
             <filter id="hero-noise">
@@ -242,40 +273,26 @@ export default function Hero() {
         </div>
 
         {/* Yellow glow — bottom left */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute",
-            inset: 0,
-            background: "radial-gradient(ellipse at 0% 100%, #F9F200 0%, transparent 60%)",
-            opacity: 0.15,
-            pointerEvents: "none",
-          }}
-        />
+        <div aria-hidden style={{
+          position: "absolute", inset: 0,
+          background: "radial-gradient(ellipse at 0% 100%, #F9F200 0%, transparent 60%)",
+          opacity: 0.15,
+          pointerEvents: "none",
+        }} />
 
-        {/* Decorative logo — right side, float */}
-        <div
-          style={{
-            position: "absolute",
-            right: "-10%",
-            top: "50%",
-            transform: "translateY(-50%)",
-            zIndex: 0,
-            pointerEvents: "none",
-          }}
-        >
+        {/* Decorative logo — right side */}
+        <div style={{
+          position: "absolute", right: "-10%", top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 0, pointerEvents: "none",
+        }}>
           <div className="logo-float">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               aria-hidden
               src="/Logos/lemonlight_logo_yl.png"
               alt=""
-              style={{
-                width: "clamp(350px, 40vw, 580px)",
-                opacity: 0.12,
-                display: "block",
-                userSelect: "none",
-              }}
+              style={{ width: "clamp(350px, 40vw, 580px)", opacity: 0.12, display: "block", userSelect: "none" }}
             />
           </div>
         </div>
@@ -283,66 +300,42 @@ export default function Hero() {
         {/* Content */}
         <div style={{ position: "relative", zIndex: 1, width: "100%" }}>
           <h1 className="hero-headline">
-            {/* Line 1 — scrambling rotating word */}
-            <span style={{ display: "block" }}>
-              <span
-                className="hero-word hero-word-1 hero-scramble"
-                style={{ minWidth }}
-              >
-                {displayText}
-              </span>
+
+            {/* Line 1 — rotating word (overflow hidden clip) */}
+            <span className="hero-word-container">
+              <div
+                ref={(el) => { slotsRef.current[0] = el; }}
+                className="hero-slot"
+              />
+              <div
+                ref={(el) => { slotsRef.current[1] = el; }}
+                className="hero-slot"
+              />
             </span>
 
-            {/* Line 2 — "das leuchtet." white */}
-            <span style={{ display: "block" }}>
-              <span className="hero-line2" style={{ color: "#F2F2EE" }}>
-                das leuchtet.
-              </span>
+            {/* Line 2 */}
+            <span className="hero-line2">
+              DAS {"Z\u00DCNDET."}
             </span>
+
           </h1>
 
-          {/* Subheadline */}
-          <p
-            className="hero-sub"
-            style={{
-              margin: 0,
-              marginTop: "24px",
-              marginBottom: "8px",
-              fontFamily: "var(--font-inter), sans-serif",
-              fontWeight: 400,
-              fontSize: "clamp(16px, 1.8vw, 22px)",
-              color: "rgba(255,255,255,0.65)",
-              maxWidth: "560px",
-              lineHeight: 1.5,
-            }}
-          >
-            Webdesign &amp; Design für Unternehmen, die sichtbar wachsen wollen.
+          {/* Subline */}
+          <p className="hero-sub">
+            Webdesign, Branding &amp; Social Media – reduziert auf das, was zählt.
           </p>
 
-          {/* Supporting line */}
-          <p
-            className="hero-sub"
-            style={{
-              margin: 0,
-              marginBottom: "40px",
-              fontFamily: "var(--font-inter), sans-serif",
-              fontWeight: 400,
-              fontSize: "14px",
-              color: "rgba(255,255,255,0.35)",
-            }}
-          >
-            Direkt umgesetzt — ohne Umwege.
+          {/* Trust line */}
+          <p className="hero-trust">
+            Direkt umgesetzt. Ein Ansprechpartner. Keine Agentur.
           </p>
 
-          <div className="hero-buttons hero-buttons-wrap" style={{ marginTop: 0 }}>
-            <a href="#work" className="hero-btn hero-btn-primary">
-              Projekte ansehen
-            </a>
-            <a href="#contact" className="hero-btn hero-btn-secondary">
-              Kontakt <span className="hero-arrow">→</span>
-            </a>
-          </div>
+          {/* CTA */}
+          <a href="#contact" className="hero-cta">
+            Projekt starten
+          </a>
         </div>
+
       </section>
     </>
   );
