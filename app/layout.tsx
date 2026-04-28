@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Cursor from "@/components/Cursor";
+import SectionDots from "@/components/SectionDots";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -22,9 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
+      <head>
+        <script dangerouslySetInnerHTML={{__html: `if ('scrollRestoration' in history) { history.scrollRestoration = 'auto'; }`}} />
+      </head>
       <body>
         <Cursor />
         <Navbar />
+        <SectionDots />
         {children}
       </body>
     </html>

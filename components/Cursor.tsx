@@ -6,11 +6,6 @@ export default function Cursor() {
   const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    window.history.scrollRestoration = "manual";
-    window.scrollTo(0, 0);
-  }, []);
-
-  useEffect(() => {
     const target  = { x: -100, y: -100 };
     const current = { x: -100, y: -100 };
     let rafId: number;

@@ -9,12 +9,12 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main>
-      <Hero />
+      <section id="hero"><Hero /></section>
       <Statement />
-      <Services />
-      <Work />
-      <About />
-      <Contact />
+      <section id="work"><Work /></section>
+      <section id="services"><Services /></section>
+      <section id="about"><About /></section>
+      <section id="contact"><Contact /></section>
       <Footer />
     </main>
   );
