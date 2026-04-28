@@ -244,6 +244,34 @@ export default function Hero() {
           transform: scale(1.01);
         }
 
+        .scroll-progress {
+          position: fixed; left: 0; top: 0;
+          width: 3px;
+          background: #F9F200;
+          z-index: 999;
+          cursor: pointer;
+          transition: width 0.2s ease;
+        }
+        .scroll-progress:hover {
+          width: 5px;
+        }
+        .scroll-progress-label {
+          position: absolute;
+          left: 8px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #F9F200;
+          font-size: 10px;
+          font-family: var(--font-inter), Inter, sans-serif;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+          pointer-events: none;
+          user-select: none;
+        }
+        .scroll-progress:hover .scroll-progress-label {
+          opacity: 1;
+        }
+
         @media (max-width: 639px) {
           .hero-section  { padding-left: 24px; padding-right: 24px; }
           .hero-headline { font-size: clamp(40px, 11vw, 72px); }
@@ -325,14 +353,13 @@ export default function Hero() {
         {/* Scroll progress — left edge */}
         <div
           ref={progressBarRef}
-          aria-hidden
-          style={{
-            position: "fixed", left: 0, top: 0,
-            width: "3px", height: "0%",
-            background: "#F9F200",
-            zIndex: 999, pointerEvents: "none",
-          }}
-        />
+          className="scroll-progress"
+          title="Nach oben"
+          onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          style={{ height: "0%" }}
+        >
+          <span className="scroll-progress-label">↑</span>
+        </div>
 
         {/* Content */}
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
