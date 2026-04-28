@@ -10,6 +10,7 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const dotRef         = useRef<HTMLSpanElement>(null);
+  const canvasRef      = useRef<HTMLCanvasElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -77,6 +78,71 @@ export default function Hero() {
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => { window.removeEventListener("scroll", onScroll); clearTimeout(timeout); };
+  }, []);
+
+  // Canvas grid point motion
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const resize = () => {
+      canvas.width  = canvas.offsetWidth;
+      canvas.height = canvas.offsetHeight;
+    };
+    resize();
+    window.addEventListener("resize", resize);
+
+    const TRAIL = 8;
+    const pts = [
+      { x: canvas.width * 0.20, y: canvas.height * 0.30, vx:  0.30, vy:  0.20, trail: [] as {x:number;y:number}[] },
+      { x: canvas.width * 0.70, y: canvas.height * 0.60, vx: -0.20, vy: -0.15, trail: [] as {x:number;y:number}[] },
+    ];
+
+    let rafId: number;
+    const animate = () => {
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      for (const p of pts) {
+        // store trail
+        p.trail.push({ x: p.x, y: p.y });
+        if (p.trail.length > TRAIL) p.trail.shift();
+
+        // draw trail
+        for (let i = 0; i < p.trail.length; i++) {
+          const alpha = (i / p.trail.length) * 0.4;
+          ctx.beginPath();
+          ctx.arc(p.trail[i].x, p.trail[i].y, 1.5, 0, Math.PI * 2);
+          ctx.fillStyle = `rgba(249,242,0,${alpha})`;
+          ctx.fill();
+        }
+
+        // draw point
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(249,242,0,0.45)";
+        ctx.fill();
+
+        // update position + wrap
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0)  p.x = w;
+        if (p.x > w)  p.x = 0;
+        if (p.y < 0)  p.y = h;
+        if (p.y > h)  p.y = 0;
+      }
+
+      rafId = requestAnimationFrame(animate);
+    };
+    rafId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      window.removeEventListener("resize", resize);
+    };
   }, []);
 
   return (
@@ -187,6 +253,17 @@ export default function Hero() {
       `}</style>
 
       <section className="hero-section">
+
+        {/* Canvas grid point motion */}
+        <canvas
+          ref={canvasRef}
+          aria-hidden
+          style={{
+            position: "absolute", top: 0, left: 0,
+            width: "100%", height: "100%",
+            pointerEvents: "none", zIndex: 0, opacity: 0.4,
+          }}
+        />
 
         {/* Dot-grid */}
         <div aria-hidden style={{
