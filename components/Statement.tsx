@@ -7,13 +7,12 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 const STATEMENT =
-  "Gutes Design verkauft. Schlechtes Design erklärt. Starke Marken leuchten einfach.";
+  "Gutes Design verkauft. Schlechtes Design erklärt.";
 
 // Per-word target color when activated. All others default to #ffffff.
 const WORD_COLORS: Record<number, string> = {
-  2: "#F9F200",              // "verkauft."
+  2: "#F9F200",               // "verkauft."
   5: "rgba(255,255,255,0.4)", // "erklärt."
-  8: "#F9F200",              // "leuchten"
 };
 
 export default function Statement() {
@@ -63,6 +62,7 @@ export default function Statement() {
     <section
       ref={sectionRef}
       style={{
+        position: "relative",
         background: "#0A0A0A",
         display: "flex",
         alignItems: "center",
@@ -93,6 +93,8 @@ export default function Statement() {
           </span>
         ))}
       </p>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src="/Logos/L_yellow.png" alt="" style={{ position: "absolute", bottom: "48px", right: "6vw", width: "100px", opacity: 0.05, pointerEvents: "none" }} />
     </section>
   );
 }
