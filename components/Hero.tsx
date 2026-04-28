@@ -10,6 +10,7 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const dotRef         = useRef<HTMLSpanElement>(null);
+  const logoRef        = useRef<HTMLImageElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -84,6 +85,17 @@ export default function Hero() {
       window.removeEventListener("scroll", onScroll);
       clearTimeout(timeout);
     };
+  }, []);
+
+  // Logo parallax
+  useEffect(() => {
+    const onScroll = () => {
+      if (!logoRef.current) return;
+      const offset = window.scrollY * 0.08;
+      logoRef.current.style.transform = `translateY(calc(-50% + ${offset}px))`;
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
   return (
@@ -236,18 +248,25 @@ export default function Hero() {
         }} />
 
         {/* Decorative logo — right side */}
-        <div style={{
-          position: "absolute", right: "-10%", top: "50%",
-          transform: "translateY(-50%)", zIndex: 0, pointerEvents: "none",
-        }}>
-          <div className="logo-float">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              aria-hidden src="/Logos/lemonlight_logo_yl.png" alt=""
-              style={{ width: "clamp(350px, 40vw, 580px)", opacity: 0.12, display: "block", userSelect: "none" }}
-            />
-          </div>
-        </div>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={logoRef}
+          aria-hidden
+          src="/Logos/L_yellow.png"
+          alt=""
+          style={{
+            position: "absolute",
+            right: "-12%",
+            top: "50%",
+            transform: "translateY(-50%)",
+            width: "clamp(400px, 45vw, 620px)",
+            opacity: 0.09,
+            display: "block",
+            userSelect: "none",
+            pointerEvents: "none",
+            zIndex: 0,
+          }}
+        />
 
         {/* Scroll progress — left edge */}
         <div
