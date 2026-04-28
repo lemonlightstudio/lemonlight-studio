@@ -86,7 +86,7 @@ export default function Contact() {
         style={{
           position: "relative",
           minHeight: "100vh",
-          background: "#0A0A0A",
+          background: "transparent",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

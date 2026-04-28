@@ -58,7 +58,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ overflow: "hidden", background: "#0A0A0A" }}>
+    <div ref={wrapperRef} style={{ overflow: "hidden", background: "transparent" }}>
       <div
         ref={stripRef}
         style={{
@@ -80,7 +80,7 @@ export default function Services() {
             alignItems: "center",
             justifyContent: "center",
             padding: "10vw",
-            background: "#0A0A0A",
+            background: "transparent",
             overflow: "hidden",
           }}
         >
@@ -170,7 +170,7 @@ export default function Services() {
               display: "flex",
               alignItems: "center",
               padding: "10vw",
-              background: "#0A0A0A",
+              background: "transparent",
               overflow: "hidden",
             }}
           >

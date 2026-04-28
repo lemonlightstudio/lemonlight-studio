@@ -99,7 +99,7 @@ export default function About() {
           clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%);
         }
         .about-right {
-          background: #0A0A0A;
+          background: transparent;
           padding: 80px 8% 80px 6%;
           display: flex;
           flex-direction: column;

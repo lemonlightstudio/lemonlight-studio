@@ -295,13 +295,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Dot-grid */}
-        <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          backgroundImage: "radial-gradient(circle, rgba(249,242,0,0.04) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }} />
-
         {/* Line-grid */}
         <div aria-hidden style={{
           position: "absolute", inset: 0, pointerEvents: "none",

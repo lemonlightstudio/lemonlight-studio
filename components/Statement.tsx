@@ -64,7 +64,7 @@ export default function Statement() {
       ref={sectionRef}
       style={{
         position: "relative",
-        background: "#0A0A0A",
+        background: "transparent",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
