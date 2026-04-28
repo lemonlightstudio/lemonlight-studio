@@ -2,13 +2,18 @@
 
 import { useEffect, useRef } from "react";
 
-const WORDS        = ["WEBDESIGN", "BRANDING", "SOCIAL"];
+const WORDS        = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
 const ALPHA        = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const DISPLAY_MS   = 2200; // how long each word is shown
 const OUT_MS       = 250;  // outgoing slide duration
 const IN_MS        = 250;  // incoming slide duration
 const SCRAMBLE_ITER = 8;
 const SCRAMBLE_TICK = 35;
+
+// "SOCIAL MEDIA" is longer — scale it down so it never exceeds the width of "DAS ZÜNDET."
+function wordFontSize(word: string): string {
+  return word === "SOCIAL MEDIA" ? "85%" : "";
+}
 
 function runScramble(target: string, el: HTMLElement): ReturnType<typeof setInterval> {
   let step = 0;
@@ -30,10 +35,24 @@ function runScramble(target: string, el: HTMLElement): ReturnType<typeof setInte
 
 export default function Hero() {
   const slotsRef        = useRef<(HTMLDivElement | null)[]>([null, null]);
-  const activeSlotRef   = useRef(0);           // index into slotsRef of the visible slot
-  const wordIdxRef      = useRef([0, 1]);      // which WORDS index each slot shows
+  const activeSlotRef   = useRef(0);
+  const wordIdxRef      = useRef([0, 1]);
   const timersRef       = useRef<ReturnType<typeof setTimeout>[]>([]);
   const scrambleRef     = useRef<ReturnType<typeof setInterval> | null>(null);
+  const progressBarRef  = useRef<HTMLDivElement>(null);
+
+  // Scroll progress line
+  useEffect(() => {
+    const onScroll = () => {
+      const bar = progressBarRef.current;
+      if (!bar) return;
+      const scrolled = window.scrollY;
+      const total    = document.documentElement.scrollHeight - window.innerHeight;
+      bar.style.height = total > 0 ? `${(scrolled / total) * 100}%` : "0%";
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const slots = slotsRef.current;
@@ -42,10 +61,12 @@ export default function Hero() {
     const s0 = slots[0]!;
     const s1 = slots[1]!;
     s0.textContent = WORDS[0];
+    s0.style.fontSize  = wordFontSize(WORDS[0]);
     s0.style.transform = "translateY(0)";
     s0.style.opacity   = "1";
     s0.style.filter    = "blur(0px)";
     s1.textContent = WORDS[1];
+    s1.style.fontSize  = wordFontSize(WORDS[1]);
     s1.style.transform = "translateY(110%)";
     s1.style.opacity   = "0";
     s1.style.filter    = "blur(4px)";
@@ -70,6 +91,7 @@ export default function Hero() {
       later(() => {
         // 2. Pre-position incoming slot at bottom (snap, no transition)
         nxtEl.textContent  = WORDS[nextWordIdx];
+        nxtEl.style.fontSize   = wordFontSize(WORDS[nextWordIdx]);
         nxtEl.style.transition = "none";
         nxtEl.style.transform  = "translateY(110%)";
         nxtEl.style.opacity    = "0";
@@ -99,6 +121,7 @@ export default function Hero() {
           curEl.style.opacity    = "0";
           curEl.style.filter     = "blur(4px)";
           curEl.textContent      = WORDS[futureWordIdx];
+          curEl.style.fontSize   = wordFontSize(WORDS[futureWordIdx]);
           wordIdxRef.current[active] = futureWordIdx;
 
           later(cycle, DISPLAY_MS);
@@ -136,8 +159,8 @@ export default function Hero() {
           background: #0A0A0A;
           display: flex;
           align-items: center;
-          padding-left: 10vw;
-          padding-right: 10vw;
+          padding-left: 12vw;
+          padding-right: 12vw;
           overflow: hidden;
         }
         .hero-headline {
@@ -164,7 +187,6 @@ export default function Hero() {
           top: 0;
           left: 0;
           color: #F9F200;
-          text-shadow: 0 0 35px rgba(249,242,0,0.2);
           will-change: transform, opacity, filter;
         }
 
@@ -237,7 +259,7 @@ export default function Hero() {
           .hero-headline { font-size: clamp(48px, 12vw, 80px); }
         }
         @media (min-width: 640px) and (max-width: 1023px) {
-          .hero-section  { padding-left: 48px; padding-right: 48px; }
+          .hero-section  { padding-left: 10vw; padding-right: 10vw; }
           .hero-headline { font-size: clamp(60px, 8vw, 100px); }
         }
       `}</style>
@@ -295,6 +317,23 @@ export default function Hero() {
               style={{ width: "clamp(350px, 40vw, 580px)", opacity: 0.12, display: "block", userSelect: "none" }}
             />
           </div>
+        </div>
+
+        {/* Scroll progress — left edge */}
+        <div aria-hidden style={{
+          position: "fixed", left: 0, top: 0, bottom: 0,
+          width: "2px", zIndex: 50, pointerEvents: "none",
+          background: "rgba(255,255,255,0.04)",
+        }}>
+          <div
+            ref={progressBarRef}
+            style={{
+              width: "100%",
+              height: "0%",
+              background: "#F9F200",
+              transition: "height 0.1s linear",
+            }}
+          />
         </div>
 
         {/* Content */}

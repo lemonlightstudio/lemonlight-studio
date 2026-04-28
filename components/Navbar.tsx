@@ -1,37 +1,11 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 
 const links = ["Work", "Studio", "Services", "Contact"];
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const dotRef        = useRef<HTMLDivElement>(null);
-  const lastSection   = useRef(-1);
-  const timeoutRef    = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    const onScroll = () => {
-      const section = Math.floor(window.scrollY / window.innerHeight);
-      if (section !== lastSection.current) {
-        lastSection.current = section;
-        const dot = dotRef.current;
-        if (!dot) return;
-        // Remove class first so re-trigger works even if already animating
-        dot.classList.remove("lp-pulse");
-        // Force reflow to restart animation
-        void dot.offsetWidth;
-        dot.classList.add("lp-pulse");
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        timeoutRef.current = setTimeout(() => dot.classList.remove("lp-pulse"), 400);
-      }
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, []);
 
   return (
     <>
@@ -99,15 +73,6 @@ export default function Navbar() {
           color: #F9F200;
         }
 
-        @keyframes lp-beat {
-          0%   { transform: scale(1);   opacity: 1;   }
-          50%  { transform: scale(2.5); opacity: 0.6; }
-          100% { transform: scale(1);   opacity: 1;   }
-        }
-        .lp-pulse {
-          animation: lp-beat 0.4s ease-in-out 1 forwards;
-        }
-
         @media (max-width: 639px) {
           .nav-links {
             display: none;
@@ -139,27 +104,11 @@ export default function Navbar() {
           borderBottom: "1px solid rgba(249,242,0,0.08)",
         }}
       >
-        {/* Logo + Lemon Pulse dot */}
-        <div style={{ display: "inline-flex", alignItems: "center", gap: 0 }}>
-          <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "baseline" }}>
-            <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "22px", letterSpacing: "-0.02em", color: "#F2F2EE" }}>lemon</span>
-            <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "22px", letterSpacing: "-0.02em", color: "#F9F200" }}>light.</span>
-          </a>
-          <div
-            ref={dotRef}
-            aria-hidden
-            style={{
-              display: "inline-block",
-              width: "6px",
-              height: "6px",
-              borderRadius: "50%",
-              background: "#F9F200",
-              marginLeft: "8px",
-              flexShrink: 0,
-              alignSelf: "center",
-            }}
-          />
-        </div>
+        {/* Logo */}
+        <a href="/" style={{ textDecoration: "none", display: "flex", alignItems: "baseline" }}>
+          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "22px", letterSpacing: "-0.02em", color: "#F2F2EE" }}>lemon</span>
+          <span style={{ fontFamily: "var(--font-inter), sans-serif", fontWeight: 700, fontSize: "22px", letterSpacing: "-0.02em", color: "#F9F200" }}>light.</span>
+        </a>
 
         <div style={{ flex: 1 }} />
 
