@@ -22,7 +22,7 @@ const PROJECTS = [
   {
     num: "03",
     title: "Projekt Gamma",
-    tags: ["Webdesign", "Marketing"],
+    tags: ["Webdesign", "Social Media"],
     gradient: "linear-gradient(135deg, #0a0a1a, #12122a)",
   },
 ];

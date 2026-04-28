@@ -256,7 +256,7 @@ export default function Hero() {
               color: "rgba(255,255,255,0.45)",
             }}
           >
-            Webdesign · Branding · Marketing
+            Webdesign · Branding · Social Media
           </p>
 
           <div className="hero-buttons hero-buttons-wrap">

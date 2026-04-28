@@ -11,19 +11,19 @@ const SERVICES = [
     number: "01",
     title: "Webdesign",
     bgWord: "WEB",
-    body: "Websites die nicht nur schön aussehen — sondern Besucher zu Kunden machen. Conversion-optimiert, schnell, und gebaut um zu wachsen.",
+    body: "Websites die nicht nur schön aussehen — sondern Besucher zu Kunden machen.",
   },
   {
     number: "02",
     title: "Branding",
     bgWord: "BRAND",
-    body: "Von Logo bis Brand Identity. Deine Marke bekommt ein Gesicht das bleibt — und einen Charakter der verkauft.",
+    body: "Von Logo bis komplette Brand Identity. Dein Auftritt bekommt ein Gesicht das bleibt.",
   },
   {
     number: "03",
-    title: "Marketing",
-    bgWord: "MKT",
-    body: "Social Media, Content & Strategie die tatsächlich funktioniert. Kein Bullshit — nur Ergebnisse.",
+    title: "Social Media",
+    bgWord: "SOC",
+    body: "Content, Design & Strategie für Instagram, LinkedIn und Co. — der Feed der auffällt.",
   },
 ];
 
