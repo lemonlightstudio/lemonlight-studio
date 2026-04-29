@@ -35,7 +35,6 @@ export default function Statement() {
         start: "top top",
         end: `+=${words.length * 80}`,
         pin: true,
-        pinSpacing: false,
         scrub: true,
         anticipatePin: 1,
       },
@@ -69,7 +68,8 @@ export default function Statement() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "120px 10vw",
+        minHeight: "100vh",
+        padding: "0 10vw",
       }}
     >
       <p
