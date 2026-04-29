@@ -9,7 +9,6 @@ const CHARS = '<>{}[]/=";:#!$';
 export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
-  const canvasRef      = useRef<HTMLCanvasElement>(null);
   const zündRef        = useRef<HTMLDivElement>(null);
 
   // Scroll progress
@@ -62,109 +61,21 @@ export default function Hero() {
   }, []);
 
 
-  // Canvas grid point motion
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const CELL  = 60;
-    const DIRS  = [{ dc: 1, dr: 0 }, { dc: -1, dr: 0 }, { dc: 0, dr: 1 }, { dc: 0, dr: -1 }];
-
-    const resize = () => {
-      canvas.width  = canvas.offsetWidth;
-      canvas.height = canvas.offsetHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    type Pt = {
-      col: number; row: number;
-      tcol: number; trow: number;
-      progress: number; speed: number;
-    };
-
-    const pickDir = (p: Pt) => {
-      const maxCol = Math.floor(canvas.width  / CELL);
-      const maxRow = Math.floor(canvas.height / CELL);
-      const valid  = DIRS.filter(d => {
-        const nc = p.col + d.dc;
-        const nr = p.row + d.dr;
-        return nc >= 0 && nc <= maxCol && nr >= 0 && nr <= maxRow;
-      });
-      const dir  = valid[Math.floor(Math.random() * valid.length)];
-      p.tcol     = p.col + dir.dc;
-      p.trow     = p.row + dir.dr;
-      p.progress = 0;
-    };
-
-    const makePoint = (col: number, row: number, speed: number): Pt => {
-      const p: Pt = { col, row, tcol: col, trow: row, progress: 0, speed };
-      pickDir(p);
-      return p;
-    };
-
-    const pts: Pt[] = [
-      makePoint(Math.round(canvas.width  * 0.20 / CELL), Math.round(canvas.height * 0.30 / CELL), 1 / 1.2),
-      makePoint(Math.round(canvas.width  * 0.70 / CELL), Math.round(canvas.height * 0.60 / CELL), 1 / 1.8),
-      makePoint(Math.round(canvas.width  * 0.50 / CELL), Math.round(canvas.height * 0.75 / CELL), 1 / 2.4),
-    ];
-
-    let last  = performance.now();
-    let rafId = 0;
-
-    const animate = (now: number) => {
-      const dt = Math.min((now - last) / 1000, 0.1);
-      last     = now;
-
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      for (const p of pts) {
-        p.progress += dt * p.speed;
-
-        if (p.progress >= 1) {
-          p.col = p.tcol;
-          p.row = p.trow;
-          pickDir(p);
-        }
-
-        // smooth interpolated position
-        const prog = Math.min(p.progress, 1);
-        const px   = (p.col + (p.tcol - p.col) * prog) * CELL;
-        const py   = (p.row + (p.trow - p.row) * prog) * CELL;
-
-        // opacity: 0.3 while moving, 0.7 when arrived
-        const moving  = p.progress < 1;
-        const opacity = moving ? 0.3 : 0.7;
-
-        ctx.beginPath();
-        ctx.arc(px, py, 3, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(249,242,0,${opacity})`;
-        ctx.fill();
-      }
-
-      rafId = requestAnimationFrame(animate);
-    };
-
-    rafId = requestAnimationFrame(animate);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      window.removeEventListener("resize", resize);
-    };
-  }, []);
-
-  // Ignition reaction
+  // Zündet ignite reaction
   useEffect(() => {
     const el = zündRef.current;
     if (!el) return;
-    const onIgnition = () => {
-      el.style.color = "#F9F200";
-      setTimeout(() => { el.style.color = "#F2F2EE"; }, 400);
+    const onIgnite = () => {
+      el.style.transition = "all 0.15s ease";
+      el.style.textShadow = "0 0 20px rgba(249,242,0,0.6)";
+      el.style.transform  = "scale(1.015)";
+      setTimeout(() => {
+        el.style.textShadow = "";
+        el.style.transform  = "";
+      }, 250);
     };
-    window.addEventListener("ignition", onIgnition);
-    return () => window.removeEventListener("ignition", onIgnition);
+    window.addEventListener("zundet-ignite", onIgnite);
+    return () => window.removeEventListener("zundet-ignite", onIgnite);
   }, []);
 
   return (
@@ -298,17 +209,6 @@ export default function Hero() {
 
       <section className="hero-section">
 
-        {/* Canvas grid point motion */}
-        <canvas
-          ref={canvasRef}
-          aria-hidden
-          style={{
-            position: "absolute", top: 0, left: 0,
-            width: "100%", height: "100%",
-            pointerEvents: "none", zIndex: 0, opacity: 0.4,
-          }}
-        />
-
         {/* Grain */}
         <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -364,7 +264,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <div ref={zündRef} data-ignition-target style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE", transition: "color 0.4s ease" }}>DAS ZÜNDET.</div>
+            <div ref={zündRef} id="zundet-word" style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE", display: "inline-block" }}>DAS ZÜNDET.</div>
           </h1>
 
           <p className="hero-sub">
