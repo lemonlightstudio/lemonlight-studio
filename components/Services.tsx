@@ -58,7 +58,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ overflow: "hidden", background: "#0A0A0A" }}>
+    <div ref={wrapperRef} style={{ background: "#0A0A0A" }}>
       <div
         ref={stripRef}
         style={{
@@ -81,7 +81,6 @@ export default function Services() {
             justifyContent: "center",
             padding: "10vw",
             background: "#0A0A0A",
-            overflow: "hidden",
           }}
         >
           {/* Giant decorative number */}
@@ -171,7 +170,6 @@ export default function Services() {
               alignItems: "center",
               padding: "10vw",
               background: "#0A0A0A",
-              overflow: "hidden",
             }}
           >
             {/* Giant background word */}
