@@ -10,6 +10,7 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const canvasRef      = useRef<HTMLCanvasElement>(null);
+  const zündRef        = useRef<HTMLDivElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -152,6 +153,18 @@ export default function Hero() {
       cancelAnimationFrame(rafId);
       window.removeEventListener("resize", resize);
     };
+  }, []);
+
+  // Ignition reaction
+  useEffect(() => {
+    const el = zündRef.current;
+    if (!el) return;
+    const onIgnition = () => {
+      el.style.color = "#F9F200";
+      setTimeout(() => { el.style.color = "#F2F2EE"; }, 400);
+    };
+    window.addEventListener("ignition", onIgnition);
+    return () => window.removeEventListener("ignition", onIgnition);
   }, []);
 
   return (
@@ -365,7 +378,7 @@ export default function Hero() {
         <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
-            <div style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE" }}>DAS ZÜNDET.</div>
+            <div ref={zündRef} data-ignition-target style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE", transition: "color 0.4s ease" }}>DAS ZÜNDET.</div>
           </h1>
 
           <p className="hero-sub">

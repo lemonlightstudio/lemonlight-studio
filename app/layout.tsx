@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Cursor from "@/components/Cursor";
 import SectionDots from "@/components/SectionDots";
 import ScrollRestoration from "@/components/ScrollRestoration";
+import GridIgnition from "@/components/GridIgnition";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body>
         <ScrollRestoration />
+        <GridIgnition />
         <Cursor />
         <Navbar />
         <SectionDots />
