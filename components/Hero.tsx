@@ -384,7 +384,7 @@ export default function Hero() {
         <div aria-hidden style={{
           position: "absolute", bottom: 0, left: 0, right: 0,
           height: "160px",
-          background: "linear-gradient(to bottom, transparent 0%, rgba(10,10,10,0.85) 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, #0A0A0A 100%)",
           pointerEvents: "none", zIndex: 2,
         }} />
 
