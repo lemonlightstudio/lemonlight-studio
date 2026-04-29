@@ -17,25 +17,25 @@ const WORD_COLORS: Record<number, string> = {
 };
 
 export default function Statement() {
-  const containerRef = useRef<HTMLElement>(null);
+  const sectionRef = useRef<HTMLElement>(null);
   const wordsRef = useRef<HTMLSpanElement[]>([]);
 
   const words = STATEMENT.split(" ");
 
   useEffect(() => {
-    const container = containerRef.current;
+    const section = sectionRef.current;
     const wordEls = wordsRef.current;
-    if (!container || wordEls.length === 0) return;
+    if (!section || wordEls.length === 0) return;
 
     gsap.set(wordEls, { opacity: 0.15, color: "#F2F2EE" });
 
     const tl = gsap.timeline({
       scrollTrigger: {
-        trigger: container,
+        trigger: section,
         start: "top top",
-        end: "+=200%",
+        end: `+=${words.length * 80}`,
         pin: true,
-        scrub: 1,
+        scrub: true,
         anticipatePin: 1,
       },
     });
@@ -61,11 +61,10 @@ export default function Statement() {
 
   return (
     <section
-      ref={containerRef}
-      className="section-grid"
+      ref={sectionRef}
       style={{
         position: "relative",
-        background: "transparent",
+        background: "#0A0A0A",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",

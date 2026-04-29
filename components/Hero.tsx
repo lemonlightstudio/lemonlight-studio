@@ -1,10 +1,6 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-
-gsap.registerPlugin(ScrollTrigger);
 
 const WORDS = ["WEBDESIGN", "BRANDING", "SOCIAL MEDIA"];
 const CHARS = '<>{}[]/=";:#!$';
@@ -14,8 +10,6 @@ export default function Hero() {
   const [display, setDisplay] = useState(WORDS[0]);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const canvasRef      = useRef<HTMLCanvasElement>(null);
-  const heroRef        = useRef<HTMLElement>(null);
-  const headlineRef    = useRef<HTMLDivElement>(null);
 
   // Scroll progress
   useEffect(() => {
@@ -160,24 +154,6 @@ export default function Hero() {
     };
   }, []);
 
-  // Headline parallax on scroll
-  useEffect(() => {
-    if (!heroRef.current || !headlineRef.current) return;
-    const ctx = gsap.context(() => {
-      gsap.to(headlineRef.current, {
-        yPercent: -8,
-        ease: "none",
-        scrollTrigger: {
-          trigger: heroRef.current,
-          start: "top top",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
   return (
     <>
       <style>{`
@@ -306,7 +282,7 @@ export default function Hero() {
         }
       `}</style>
 
-      <section ref={heroRef} className="hero-section">
+      <section className="hero-section">
 
         {/* Canvas grid point motion */}
         <canvas
@@ -319,11 +295,18 @@ export default function Hero() {
           }}
         />
 
-        {/* Grid */}
+        {/* Dot-grid */}
         <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 0,
+          position: "absolute", inset: 0, pointerEvents: "none",
+          backgroundImage: "radial-gradient(circle, rgba(249,242,0,0.04) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }} />
+
+        {/* Line-grid */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0, pointerEvents: "none",
           backgroundImage:
-            "linear-gradient(rgba(249,242,0,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.04) 1px, transparent 1px)",
+            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
           backgroundSize: "60px 60px",
         }} />
 
@@ -379,7 +362,7 @@ export default function Hero() {
         </div>
 
         {/* Content */}
-        <div ref={headlineRef} style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
+        <div style={{ position: "relative", zIndex: 1, width: "100%", fontFamily: "var(--font-inter), Inter, sans-serif" }}>
           <h1 className="hero-headline">
             <span className="hero-rotating-word">{display}</span>
             <div style={{ fontFamily: "var(--font-inter),Inter,sans-serif", fontWeight: 900, fontSize: "clamp(64px,9vw,130px)", lineHeight: 0.95, color: "#F2F2EE" }}>DAS ZÜNDET.</div>

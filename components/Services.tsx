@@ -58,7 +58,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div ref={wrapperRef} className="section-grid" style={{ overflow: "hidden", background: "transparent" }}>
+    <div ref={wrapperRef} style={{ overflow: "hidden", background: "#0A0A0A" }}>
       <div
         ref={stripRef}
         style={{
@@ -80,7 +80,7 @@ export default function Services() {
             alignItems: "center",
             justifyContent: "center",
             padding: "10vw",
-            background: "transparent",
+            background: "#0A0A0A",
             overflow: "hidden",
           }}
         >
@@ -170,7 +170,7 @@ export default function Services() {
               display: "flex",
               alignItems: "center",
               padding: "10vw",
-              background: "transparent",
+              background: "#0A0A0A",
               overflow: "hidden",
             }}
           >

@@ -83,11 +83,10 @@ export default function Contact() {
 
       <section
         ref={sectionRef}
-        className="section-grid"
         style={{
           position: "relative",
           minHeight: "100vh",
-          background: "transparent",
+          background: "#0A0A0A",
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",

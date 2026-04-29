@@ -108,7 +108,7 @@ export default function Work() {
           height: 320px;
           border-radius: 2px;
           overflow: hidden;
-          background: transparent;
+          background: #0A0A0A;
           border: 1px solid rgba(255,255,255,0.06);
           transition: border-color 0.4s ease;
         }
@@ -165,7 +165,7 @@ export default function Work() {
         }
       `}</style>
 
-      <section className="section-grid" style={{ background: "transparent", padding: "120px 10vw" }}>
+      <section style={{ background: "#0A0A0A", padding: "120px 10vw" }}>
 
         {/* Header */}
         <p

@@ -99,7 +99,7 @@ export default function About() {
           clip-path: polygon(0 0, 95% 0, 100% 100%, 0% 100%);
         }
         .about-right {
-          background: transparent;
+          background: #0A0A0A;
           padding: 80px 8% 80px 6%;
           display: flex;
           flex-direction: column;
@@ -134,7 +134,7 @@ export default function About() {
         }
       `}</style>
 
-      <section className="about-grid section-grid">
+      <section className="about-grid">
 
         {/* ── Left — Image ─────────────────────────────────────── */}
         <div className="about-img-wrap">
