@@ -180,13 +180,14 @@ export default function Hero() {
         }
         .hero-section {
           position: relative;
+          z-index: 1;
           height: 100vh;
           background: #0A0A0A;
           display: flex;
           align-items: center;
           padding-left: 6vw;
           padding-right: 6vw;
-          overflow: hidden;
+          overflow: visible;
           border: none;
           outline: none;
           box-shadow: none;
@@ -308,21 +309,6 @@ export default function Hero() {
           }}
         />
 
-        {/* Dot-grid */}
-        <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          backgroundImage: "radial-gradient(circle, rgba(249,242,0,0.04) 1px, transparent 1px)",
-          backgroundSize: "24px 24px",
-        }} />
-
-        {/* Line-grid */}
-        <div aria-hidden style={{
-          position: "absolute", inset: 0, pointerEvents: "none",
-          backgroundImage:
-            "linear-gradient(rgba(249,242,0,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(249,242,0,0.03) 1px, transparent 1px)",
-          backgroundSize: "60px 60px",
-        }} />
-
         {/* Grain */}
         <div aria-hidden style={{ position: "absolute", inset: 0, opacity: 0.04, pointerEvents: "none" }}>
           <svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%">
@@ -334,12 +320,12 @@ export default function Hero() {
           </svg>
         </div>
 
-        {/* Yellow glow — bottom left */}
+        {/* Yellow glow — bottom left, bleeds below hero */}
         <div aria-hidden style={{
-          position: "absolute", bottom: 0, left: 0,
-          width: "70vw", height: "70vh",
-          pointerEvents: "none",
-          background: "radial-gradient(circle at 5% 95%, rgba(249,242,0,0.12) 0%, rgba(249,242,0,0.05) 25%, transparent 50%)",
+          position: "absolute", bottom: "-80px", left: 0,
+          width: "45%", height: "70%",
+          pointerEvents: "none", zIndex: 0,
+          background: "linear-gradient(135deg, rgba(249,242,0,0.13) 0%, rgba(249,242,0,0.05) 35%, transparent 65%)",
         }} />
 
         {/* Coordinates — bottom right */}
@@ -393,6 +379,14 @@ export default function Hero() {
             Projekt starten
           </a>
         </div>
+
+        {/* Bottom fade — dissolves into next section */}
+        <div aria-hidden style={{
+          position: "absolute", bottom: 0, left: 0, right: 0,
+          height: "160px",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(10,10,10,0.85) 100%)",
+          pointerEvents: "none", zIndex: 2,
+        }} />
 
       </section>
 

@@ -64,6 +64,7 @@ export default function Statement() {
       ref={sectionRef}
       style={{
         position: "relative",
+        zIndex: 1,
         background: "#0A0A0A",
         display: "flex",
         alignItems: "center",
@@ -72,6 +73,13 @@ export default function Statement() {
         padding: "0 10vw",
       }}
     >
+      {/* Residual glow — echoes hero light bleeding down */}
+      <div aria-hidden style={{
+        position: "absolute", top: 0, left: 0,
+        width: "35%", height: "200px",
+        background: "radial-gradient(ellipse at 10% 0%, rgba(249,242,0,0.05) 0%, transparent 70%)",
+        pointerEvents: "none", zIndex: 0,
+      }} />
       <p
         style={{
           fontFamily: "var(--font-inter), sans-serif",
