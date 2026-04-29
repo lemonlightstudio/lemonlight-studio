@@ -83,6 +83,7 @@ export default function Contact() {
 
       <section
         ref={sectionRef}
+        className="section-grid"
         style={{
           position: "relative",
           minHeight: "100vh",

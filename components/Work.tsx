@@ -165,7 +165,7 @@ export default function Work() {
         }
       `}</style>
 
-      <section style={{ background: "transparent", padding: "120px 10vw" }}>
+      <section className="section-grid" style={{ background: "transparent", padding: "120px 10vw" }}>
 
         {/* Header */}
         <p

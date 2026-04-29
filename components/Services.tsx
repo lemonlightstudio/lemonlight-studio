@@ -58,7 +58,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div ref={wrapperRef} style={{ overflow: "hidden", background: "transparent" }}>
+    <div ref={wrapperRef} className="section-grid" style={{ overflow: "hidden", background: "transparent" }}>
       <div
         ref={stripRef}
         style={{

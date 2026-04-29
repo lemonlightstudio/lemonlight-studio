@@ -165,7 +165,7 @@ export default function Hero() {
     if (!heroRef.current || !headlineRef.current) return;
     const ctx = gsap.context(() => {
       gsap.to(headlineRef.current, {
-        yPercent: -15,
+        yPercent: -8,
         ease: "none",
         scrollTrigger: {
           trigger: heroRef.current,

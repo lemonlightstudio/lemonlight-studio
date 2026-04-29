@@ -134,7 +134,7 @@ export default function About() {
         }
       `}</style>
 
-      <section className="about-grid">
+      <section className="about-grid section-grid">
 
         {/* ── Left — Image ─────────────────────────────────────── */}
         <div className="about-img-wrap">

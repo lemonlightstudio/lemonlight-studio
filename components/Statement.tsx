@@ -62,6 +62,7 @@ export default function Statement() {
   return (
     <section
       ref={containerRef}
+      className="section-grid"
       style={{
         position: "relative",
         background: "transparent",
